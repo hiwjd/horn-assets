@@ -82,10 +82,11 @@
             axios.post(_self.url("/signin"), qs.stringify(_self.ruleForm)).then(function(res) {
               _self.refreshCaptcha();
               _self.$message({
+                duration: 1000,
                 message: res.data.msg,
                 type: "info",
                 onClose: function() {
-                  if(res.data.code == '1000') {
+                  if(res.data.code == 0) {
                     var route = _self.$route;
                     if(route.query.redirect) {
                       _self.$router.replace(route.query.redirect);
