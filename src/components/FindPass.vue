@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-row>
+    <AppHead></AppHead>
+    <el-row class="view-center">
       <el-col :span="4" :offset="10">
 
         <el-form :model="ruleForm" label-position="left" :rules="rules" ref="ruleForm" label-width="0" class="demo-ruleForm">
@@ -23,10 +24,10 @@
           <el-form-item>
             <el-button type="primary" @click.native.prevent="handleSubmit" style="width:100%;">发送邮件</el-button>
           </el-form-item>
-          <el-form-item>
+          <!--<el-form-item>
             <router-link to="/signin" class="el-button-text">登录</router-link>
             <router-link to="/signup" class="el-button-text" style="float:right;">注册</router-link>
-          </el-form-item>
+          </el-form-item>-->
         </el-form>
 
       </el-col>
@@ -38,7 +39,11 @@
 <script>
   import axios from 'axios'
   import qs from 'query-string'
+  import AppHead from './AppHead.vue'
   export default {
+    components: {
+      'AppHead': AppHead
+    },
     data() {
       return {
         ruleForm: {
@@ -112,7 +117,7 @@
     content: '';
     display: table;
   }
-  .view {
-    padding-top: 140px;
+  .view-center {
+    padding-top: 90px;
   }
 </style>

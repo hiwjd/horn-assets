@@ -62,6 +62,52 @@
   export default {
     created () {
       console.log("Portal.vue created ##############");
+
+      var _self = this;
+
+      var host = "http://app.horn.com:9092/api";
+      HORN.API.Identity(host, function(uid) {
+          
+          var content = $("#content"),
+              msg = $("#msg"),
+              nick = $("#nick").val(),
+              conn_type = $("#conn_type").val();
+
+          HORN.Init({
+              uid: uid,
+              host: host,
+              conn_type: "longpolling"
+          });
+
+          var conn = HORN.GetConnection();
+
+          conn.on("connected", function(json) {
+              console.log(json);
+              if(json.chats && json.chats.length == 1) {
+                  $("#chat_id").val(json.chats[0].ID);
+              }
+          });
+
+          conn.on("message", function(json) {
+              console.log(json);
+              if(json.data) {
+                  for(var i=0; i<json.data.length; i++) {
+                      var m = json.data[i];
+                      //content.append("<div>"+m.From.Name+"说: "+m.Text+"</div>");
+                      for(var i=0; i<_self.users.length; i++) {
+                        _self.users[i].msgs.push(m.text);
+                        _self.users[i].msg = m.text;
+                      }
+                  }
+              }
+          });
+
+          conn.start();
+
+      }, function(j) {
+          console.error(j);
+      });
+
       var x = 1;
       function receive() {
         for(var i=0; i<this.users.length; i++) {
@@ -70,10 +116,10 @@
         }
         x++;
 
-        setTimeout(receive.bind(this), 2000);
+        setTimeout(receive.bind(this), 500);
       }
 
-      receive.call(this);
+      //receive.call(this);
     },
     data () {
       return {

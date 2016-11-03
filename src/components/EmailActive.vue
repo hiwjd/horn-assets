@@ -3,7 +3,7 @@
   <AppHead></AppHead>
     <el-row class="view-center">
         <el-col :span="4" :offset="10">
-            <h1>感谢您的注册，请查看激活邮件</h1>
+            <h1>您已完成注册！点击<router-link to="/signin" class="el-button-text">登录</router-link></h1>
         </el-col>
     </el-row>
 </div>

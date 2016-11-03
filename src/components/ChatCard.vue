@@ -71,12 +71,22 @@
     },
     computed: {
       panHeight: function() {
-        var _h = this.height - 216;
+        var _h = this.height - 266;
         return _h + "px";
       }
     },
     created () {
       console.log("ChatCard.vue created");
+    },
+    watch: {
+      'user.msgs': function() {
+        this.$nextTick(function() {
+          var chatpan = this.$el.querySelector(".chat-pan");
+          if(chatpan) {
+            chatpan.scrollTop = chatpan.scrollHeight;
+          }
+        });
+      }
     }
   }
 </script>
@@ -109,7 +119,7 @@
   font-size: 13px;
 }
 .chat-editor {
-  min-height: 100px;
+  min-height: 150px;
 }
 .chat-editor-tool {
   height: 30px;

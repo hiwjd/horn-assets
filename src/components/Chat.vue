@@ -72,6 +72,7 @@
   border-bottom:1px solid #efefef; 
   cursor:pointer;
   font-size: 12px;
+  cursor: pointer;
 }
 .active {
   background-color: #fbfcfe;
