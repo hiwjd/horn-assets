@@ -37,7 +37,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import qs from 'query-string'
   import AppHead from './AppHead.vue'
   export default {
@@ -77,7 +76,7 @@
         var _self = this;
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            axios.post(_self.url("/signin"), qs.stringify(_self.ruleForm)).then(function(res) {
+            _self.$http.post(_self.url("/signin"), qs.stringify(_self.ruleForm)).then(function(res) {
               _self.refreshCaptcha();
               _self.$message({
                 message: res.data.msg,

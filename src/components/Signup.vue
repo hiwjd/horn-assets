@@ -39,7 +39,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import qs from 'query-string'
   import AppHead from './AppHead.vue'
   export default {
@@ -83,7 +82,7 @@
         var _self = this;
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            axios.post(_self.url("/signup"), qs.stringify(_self.ruleForm)).then(function(res) {
+            this.$http.post(_self.url("/signup"), qs.stringify(_self.ruleForm)).then(function(res) {
               console.log(res);
               if(res.data.code == 0) {
                 _self.$router.push("/confirm");

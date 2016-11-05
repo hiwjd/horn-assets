@@ -28,6 +28,8 @@ import state from './state.js'
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 
+Vue.prototype.$http = axios
+
 axios.defaults.withCredentials = true;
 
 // 负责防止未登陆进入登陆界面
@@ -58,9 +60,7 @@ function check(to, from, next) {
     if(res.data.code == 0) {
       console.log(from);
       if(from.path.substr(0, 7) == '/portal') {
-        next({
-          path: from.fullPath
-        });
+        next(false);
       } else {
         next({
           path: "/portal"
@@ -92,7 +92,17 @@ const router = new VueRouter({
       beforeEnter: requireAuth,
       children: [
         { path: '', component: PortalHome, name: "portalhome" },
-        { path: 'chat', component: Chat, name: "chat", children: [{path: '', component: NoChat}, {path: '/', component: NoChat}, {path: ':uid', component: ChatCard, name: 'chatcard'}] },
+        { 
+          path: 'chat', 
+          component: Chat, 
+          name: "chat", 
+          children: [
+            {path: '', component: NoChat, name: 'nochat'}, 
+            //{path: '/', component: NoChat, name: 'nochat'}, 
+            {path: ':uid', component: ChatCard, name: 'chatcard'},
+            //{path: '*', component: NoChat, name: 'nochat'}
+          ] 
+        },
         { path: 'visitor', component: Visitor, name: "visitor" },
         { path: 'tickets', component: Tickets, name: "tickets" },
         { path: 'history', component: History, name: "history" },

@@ -1,14 +1,15 @@
 <template>
-    <el-row>
-      <el-col :span="5" v-bind:style="{ borderRight:'1px solid #efefef', height:computedHeight, background: '#fff', overflow: 'auto' }">
-        <div class="chat-item" :class="{active: curUser.id == user.id}" v-for="user in users" @click="choseu(user, $event)">
+  <div>
+
+    <div class="userlist" v-bind:style="{ height:computedHeight, background: '#fff', overflow: 'auto' }">
+      <div class="chat-item" v-for="user in users" :class="{active: curUser.id == user.id}" @click="choseu(user, $event)">
           <el-row>
             <el-col :span="4">
               <img src="http://placehold.it/40x40">
             </el-col>
             <el-col :span="20">
               <div>
-                {{user.addr}} {{user.msg}} 
+                {{user.id}}
               </div>
               <div>
                 <el-tag type="gray">标签二</el-tag>
@@ -17,11 +18,14 @@
             </el-col>
           </el-row>
         </div>
-      </el-col>
-      <el-col :span="19" style="border-right:1px solid #efefef; height:100%;">
+    </div>
+
+    <el-row style="margin-left: 260px;">
+      <el-col :span="24" style="border-right:1px solid #efefef; height:100%;">
         <router-view :user="curUser" :height="height"></router-view>
       </el-col>
     </el-row>
+  </div>
 </template>
 
 <script>
@@ -32,10 +36,21 @@
       window.addEventListener('resize', this.handleResize)
 
       console.log(this.$route.params);
-      for(var i=0; i<this.users.length; i++) {
-        if(this.users[i].id == this.$route.params.uid) {
-            this.curUser = this.users[i];
-            break;
+      if(!this.$route.params.uid) {
+        if(Object.keys(this.users).length > 0) {
+          console.log("默认选第一个");
+          var _uid = Object.keys(this.users)[0];
+          this.$router.push({ name: "chatcard", params: {uid: _uid} });
+        } else {
+          console.log("跳转到nochat");
+          this.$router.push({ name: "nochat" });
+        }
+      } else {
+        console.log("找对话");
+        if(typeof this.users[this.$route.params.uid] == "object") {
+          this.curUser = this.users[this.$route.params.uid];
+        } else {
+          this.$router.push({ name: "nochat" });
         }
       }
       console.log(this.curUser);
@@ -43,12 +58,13 @@
     props: ["users"],
     data () {
         return {
-            curUser: null,
+            curUser: {},
             height: window.innerHeight
         }
     },
     methods: {
       choseu (curUser, e) {
+        console.log("choseu");
         this.curUser = curUser;
         this.$router.push({ name:"chatcard", params: {uid: curUser.id, user:curUser}, meta: {user: curUser} });
       },
@@ -67,15 +83,23 @@
 </script>
 
 <style scoped>
+.userlist {
+  width: 260px;
+  height: 100%;
+  float: left;
+  box-sizing: border-box;
+  background-color: #f5f7fa;
+  box-shadow: inset -1px 0 0 #e1e4eb;
+  position: fixed;
+}
 .chat-item {
   padding: 10px; 
-  border-bottom:1px solid #efefef; 
   cursor:pointer;
   font-size: 12px;
   cursor: pointer;
 }
 .active {
-  background-color: #fbfcfe;
+  background-color: #f5f7fa;
   border-right: 2px solid red;
 }
 .chat-item .el-tag {

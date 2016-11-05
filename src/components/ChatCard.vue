@@ -3,11 +3,15 @@
       <el-col :span="17">
         
         <div class="chat-card">
-          <div class="chat-tool">{{user.addr}} {{user.id}}</div>
+          <div class="chat-tool">{{user.id}}</div>
           <div class="chat-tip">正在浏览 <a href="#">功能介绍</a></div>
           <div class="chat-pan" v-bind:style="{ height: panHeight, overflow: 'auto' }">
             <ul>
-              <li v-for="m in user.msgs">{{m}}</li>
+              <li v-for="m in user.msgs">
+                <pre v-if="m.type=='text'">{{m.text}}</pre>
+                <pre v-if="m.type=='image'">图片{{m.image.src}}</pre>
+                <pre v-if="m.type=='file'">文件{{m.file.src}}</pre>
+              </li>
             </ul>
           </div>
           <div class="chat-editor">
