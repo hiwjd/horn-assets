@@ -75,7 +75,7 @@
     },
     computed: {
       panHeight: function() {
-        var _h = this.height - 266;
+        var _h = this.height - 226;
         return _h + "px";
       }
     },
@@ -98,10 +98,10 @@
 <style scoped>
 .chat-card {
   /*border: 1px solid #efefef;*/
-  margin: 20px;
+  /*margin: 20px;*/
   background: #fff;
   /*box-shadow: 0 1px 3px 0 rgba(52,63,75,.1);*/
-  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+  /*box-shadow: 0 0 2px rgba(0,0,0,0.2);*/
 }
 .chat-tool {
   height: 40px;
@@ -130,7 +130,7 @@
   border-bottom: 1px solid #efefef;
 }
 .chat-info {
-  padding: 30px 20px 20px 0;
+  padding: 30px;
   font-size: 12px;
 }
 </style>
