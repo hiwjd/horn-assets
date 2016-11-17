@@ -54,7 +54,7 @@
         </ul>
       </div>
       <div class="right-body">
-        <router-view :users="users"></router-view>
+        <router-view></router-view>
       </div>
     </div>
 </template>
@@ -64,69 +64,11 @@
   export default {
     created () {
       console.log("Portal.vue created ##############");
-
-      var _self = this;
-      var host = "http://app.horn.com:9092/api";
-
-      var content = $("#content"),
-          msg = $("#msg"),
-          nick = $("#nick").val(),
-          conn_type = $("#conn_type").val();
-
-      HORN.Init({
-          uid: "kefu001",
-          host: host,
-          conn_type: "longpolling",
-          role: "kefu"
-      });
-
-      var conn = HORN.GetConnection();
-
-      conn.on("connected", function(json) {
-          console.log(json);
-          if(json.state.chats) {
-            var chats = json.state.chats;
-            for(var i=0; i<chats.length; i++) {
-              chats[i].msgs = [];
-              //_self.users[chats[i].id] = chats[i];
-              Vue.set(_self.users, chats[i].id, chats[i]);
-            }
-          }
-      });
-
-      conn.on("message", function(json) {
-          console.log(json);
-          if(json.data) {
-              for(var i=0; i<json.data.length; i++) {
-                  var m = json.data[i];
-                  //content.append("<div>"+m.From.Name+"说: "+m.Text+"</div>");
-                  // for(var i=0; i<_self.users.length; i++) {
-                  //   _self.users[i].msgs.push(m.text);
-                  //   _self.users[i].msg = m.text;
-                  // }
-                  switch(m.type) {
-                      case "text":
-                      case "image":
-                      case "file":
-                        _self.users[m.chat.id].msgs.push(m);
-                      break;
-                      case "request_chat":
-                        HORN.API.JoinChat(m.event.chat.id, function(j) {console.log(arguments);}, function() {console.log(arguments);});
-                        Vue.set(_self.users, m.event.chat.id, {id:m.event.chat.id, msgs:[]});
-                      break;
-                      case "join_chat":
-                      break;
-                  }
-              }
-          }
-      });
-
-      conn.start();
     },
     data () {
       return {
         curMenu: this.$route.matched[1].name,
-        users: {"aaaaa":{"id":"zzzzzz","msgs":[]}}
+        users: {"zzzzzz":{"id":"zzzzzz","msgs":[]}}
       }
     },
     methods: {

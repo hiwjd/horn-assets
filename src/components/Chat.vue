@@ -2,14 +2,14 @@
   <div>
 
     <div class="userlist" v-bind:style="{ height:computedHeight, background: '#fff', overflow: 'auto' }">
-      <div class="chat-item" v-for="user in users" :class="{active: curUser.id == user.id}" @click="choseu(user, $event)">
+      <div class="chat-item" v-for="chat in chats" :class="{active: isActive(chat)}" @click="choseu(chat, $event)">
           <el-row>
             <el-col :span="4">
               <img src="http://placehold.it/40x40">
             </el-col>
             <el-col :span="20">
               <div>
-                {{user.id}}
+                {{chat.id}}
               </div>
               <div>
                 <el-tag type="gray">标签二</el-tag>
@@ -22,7 +22,7 @@
 
     <el-row style="margin-left: 260px;">
       <el-col :span="24" style="border-right:1px solid #efefef; height:100%;">
-        <router-view :user="curUser" :height="height"></router-view>
+        <router-view :height="height"></router-view>
       </el-col>
     </el-row>
   </div>
@@ -35,48 +35,57 @@
 
       window.addEventListener('resize', this.handleResize)
 
-      console.log(this.$route.params);
-      if(!this.$route.params.uid) {
-        if(Object.keys(this.users).length > 0) {
-          console.log("默认选第一个");
-          var _uid = Object.keys(this.users)[0];
-          this.$router.push({ name: "chatcard", params: {uid: _uid} });
-        } else {
-          console.log("跳转到nochat");
-          this.$router.push({ name: "nochat" });
-        }
-      } else {
-        console.log("找对话");
-        if(typeof this.users[this.$route.params.uid] == "object") {
-          this.curUser = this.users[this.$route.params.uid];
-        } else {
-          this.$router.push({ name: "nochat" });
-        }
-      }
-      console.log(this.curUser);
+      //debugger;
+      // console.log(this.$route.params);
+      // if(!this.$route.params.uid) {
+      //   if(Object.keys(this.users).length > 0) {
+      //     console.log("默认选第一个");
+      //     var _uid = Object.keys(this.users)[0];
+      //     this.$router.push({ name: "chatcard", params: {uid: _uid} });
+      //   } else {
+      //     console.log("跳转到nochat");
+      //     this.$router.push({ name: "nochat" });
+      //   }
+      // } else {
+      //   console.log("找对话");
+      //   if(typeof this.users[this.$route.params.uid] == "object") {
+      //     this.curUser = this.users[this.$route.params.uid];
+      //   } else {
+      //     this.$router.push({ name: "nochat" });
+      //   }
+      // }
     },
-    props: ["users"],
     data () {
         return {
-            curUser: {},
             height: window.innerHeight
         }
     },
     methods: {
-      choseu (curUser, e) {
+      choseu (chat, e) {
         console.log("choseu");
-        this.curUser = curUser;
-        this.$router.push({ name:"chatcard", params: {uid: curUser.id, user:curUser}, meta: {user: curUser} });
+        this.$store.dispatch('choseChat', {chat: chat});
+        this.$router.push({ name:"chatcard", params: {uid: chat.id, chat:chat}, meta: {chat: chat} });
       },
       handleResize: function(e) {
         this.height = window.innerHeight;
         this.width = window.innerWidth;
-        //console.log(window.innerHeight, window.innerWidth);
+      },
+      isActive: function(chat) {
+        if(this.$store.state.chat) {
+          return this.$store.state.chat.id == chat.id;
+        }
+        return false;
       }
     },
     computed: {
         computedHeight: function() {
             return this.height + "px";
+        },
+        chats: function() {
+          return this.$store.state.chats;
+        },
+        chat: function() {
+          return this.$store.state.chat;
         }
     }
   }

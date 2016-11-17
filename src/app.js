@@ -1,5 +1,7 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import VueRouter from 'vue-router'
+import { sync } from 'vuex-router-sync'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import axios from 'axios'
@@ -25,12 +27,12 @@ import state from './state.js'
 // 1. Use plugin.
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
+
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 
-Vue.prototype.$http = axios
-
 axios.defaults.withCredentials = true;
+Vue.prototype.$http = axios
 
 // 负责防止未登陆进入登陆界面
 function requireAuth (to, from, next) {
@@ -97,10 +99,10 @@ const router = new VueRouter({
           component: Chat, 
           name: "chat", 
           children: [
-            {path: '', component: NoChat, name: 'nochat'}, 
+            //{path: '', component: NoChat, name: 'nochat'}, 
             //{path: '/', component: NoChat, name: 'nochat'}, 
             {path: ':uid', component: ChatCard, name: 'chatcard'},
-            //{path: '*', component: NoChat, name: 'nochat'}
+            {path: '', component: NoChat, name: 'nochat'}
           ] 
         },
         { path: 'visitor', component: Visitor, name: "visitor" },
@@ -114,11 +116,15 @@ const router = new VueRouter({
   ]
 });
 
+import store from './store.js'
+sync(store, router)
+
 // 4. Create and mount root instance.
 // Make sure to inject the router.
 // Route components will be rendered inside <router-view>.
 new Vue({
   router: router,
   el: '#app',
+  store,
   render: h => h(App)
 });
