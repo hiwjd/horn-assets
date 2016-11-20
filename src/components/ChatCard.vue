@@ -4,13 +4,15 @@
         
         <div class="chat-card">
           <div class="chat-tool">{{chat.id}}</div>
-          <div class="chat-tip">正在浏览 <a href="#" @click="send()">功能介绍</a></div>
+          <div class="chat-tip">正在浏览 <a href="#">功能介绍</a></div>
           <div class="chat-pan" v-bind:style="{ height: panHeight, overflow: 'auto' }">
             <ul>
               <li v-for="m in chat.msgs">
                 <pre v-if="m.type=='text'">{{m.text}}</pre>
                 <pre v-if="m.type=='image'">图片{{m.image.src}}</pre>
                 <pre v-if="m.type=='file'">文件{{m.file.src}}</pre>
+                <pre v-if="m.type=='request_chat'">收到请求对话</pre>
+                <pre v-if="m.type=='join_chat'">收到加入对话</pre>
               </li>
             </ul>
           </div>
@@ -19,7 +21,7 @@
               <span>ctrl发送<input type="checkbox" v-model="ctrl"></span>
             </div>
             <div class="chat-editor-input">
-              <div-editor v-model="content" v-on:enter="send" :ctrl="ctrl"></div-editor>
+              <textarea class="inputor" v-model="content" v-on:keydown.enter="enter" v-bind:style="{ height: '149px' }"></textarea>
             </div>            
           </div>
         </div>
@@ -68,36 +70,12 @@
 </template>
 
 <script>
-  import Vue from 'vue';
-  Vue.component('div-editor', {
-    template: '<div contenteditable="true" class="inputor" v-on:input="updateValue($event.target.innerHTML)" v-on:keydown.enter="enter" style="width:100%; height:100%;">{{content}}</div>',
-    props: {
-      content:{}, 
-      ctrl:{default: false}
-    },
-    methods: {
-      updateValue: function(text) {
-        // 这个触发了后 估计v-model特性内会处理 略神奇。。
-        // https://cn.vuejs.org/v2/guide/components.html#使用自定义事件的表单输入组件
-        this.$emit('input', text);
-      },
-      enter: function(event) {
-        console.log(event);
-        if(this.ctrl == event.ctrlKey) {
-          //debugger;
-          event.preventDefault();
-          event.stopPropagation();
-          this.$emit('enter');
-        }
-      }
-    }
-  });
   export default {
     props: ["height"],
     data () {
       return {
         text: "Hello World!",
-        content: "z",
+        content: "",
         ctrl: false
       }
     },
@@ -124,22 +102,35 @@
       }
     },
     methods: {
+      enter: function(event) {
+        if(this.ctrl == event.ctrlKey) {
+          //debugger;
+          event.preventDefault();
+          event.stopPropagation();
+          this.send();
+        }
+      },
       send: function() {
-        HORN.SendMsgText(this.chat.id, this.content, function(j) {
+        var content = this.content;
+        this.content = "";
+        HORN.SendMsgText(this.chat.id, content, function(j) {
             console.log(j);
         }, function(j) {
             console.log(j);
         });
-      },
-      updateValue: function(text) {
-        this.content = text;
-        console.log(text);
       }
     }
   }
 </script>
 
 <style scoped>
+textarea.inputor {
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
 .chat-card {
   /*border: 1px solid #efefef;*/
   /*margin: 20px;*/
@@ -172,7 +163,12 @@
 }
 .chat-editor-tool {
   height: 30px;
-  border-bottom: 1px solid #efefef;
+  line-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.chat-editor-input {
+  padding: 0 10px 10px 10px;
 }
 .chat-info {
   padding: 30px;

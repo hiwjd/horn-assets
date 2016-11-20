@@ -1,8 +1,8 @@
 <template>
   <div>
 
-    <div class="userlist" v-bind:style="{ height:computedHeight, background: '#fff', overflow: 'auto' }">
-      <div class="chat-item" v-for="chat in chats" :class="{active: isActive(chat)}" @click="choseu(chat, $event)">
+    <div class="chat-list" v-bind:style="{ height:computedHeight, background: '#fff', overflow: 'auto' }">
+      <div v-if="chats" class="chat-item" v-for="chat in chats" :class="{active: isActive(chat)}" @click="choseu(chat, $event)">
           <el-row>
             <el-col :span="4">
               <img src="http://placehold.it/40x40">
@@ -17,7 +17,10 @@
               </div>
             </el-col>
           </el-row>
-        </div>
+      </div>
+      <div v-else>
+        ffff
+      </div>
     </div>
 
     <el-row style="margin-left: 260px;">
@@ -60,6 +63,31 @@
             height: window.innerHeight
         }
     },
+    beforeRouteEnter (to, from, next) {
+      console.log("beforeRouteEnter");
+      // getPost(to.params.id, (err, post) => 
+      //   if (err) {
+      //     // display some global error message
+      //     next(false)
+      //   } else {
+      //     next(vm => {
+      //       vm.post = post
+      //     })
+      //   }
+      // })
+      //var _self = this;
+      setTimeout(function() {
+        next(vm => {
+          console.log(vm);
+          if(to.params.uid) {
+            var chat = vm.$store.state.chats[to.params.uid];
+            vm.$store.dispatch('choseChat', {chat: chat});
+          } else {
+            vm.$store.dispatch('choseChat', {chat: {}});
+          }
+        });
+      }, 500);
+    },
     methods: {
       choseu (chat, e) {
         console.log("choseu");
@@ -92,7 +120,7 @@
 </script>
 
 <style scoped>
-.userlist {
+.chat-list {
   width: 260px;
   height: 100%;
   float: left;
