@@ -38,7 +38,7 @@ export default function createHORNPlugin (HORN) {
                         store.dispatch('addMsg', {msg: m});
                       break;
                       case "request_chat":
-                        if(/*version == null || */m.mid > version) {
+                        if(/*version == null || */m.mid > store.state.version) {
                           HORN.JoinChat(m.event.chat.id, function(j) {console.log(arguments);}, function() {console.log(arguments);});
                           m.event.chat.msgs = [];
                           store.dispatch('addChat', {chat: m.event.chat});
