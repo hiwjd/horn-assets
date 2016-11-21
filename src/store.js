@@ -34,7 +34,7 @@ export default new Vuex.Store({
         state.version = payload.version;
     },
     addUser (state, payload) {
-        Vue.set(state.users, payload.user.id, payload.user);
+        Vue.set(state.users, payload.user.uid, payload.user);
     }
   },
   actions: {
