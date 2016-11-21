@@ -3,8 +3,8 @@
       <el-col :span="17">
         
         <div class="chat-card">
-          <div class="chat-tool">{{chat.id}}</div>
-          <div class="chat-tip">正在浏览 <a href="#">功能介绍</a></div>
+          <div class="chat-tool">{{chat.id}} {{user.os}} {{user.browser}}</div>
+          <div class="chat-tip">正在浏览 <a target="_blank" :href="user.url">{{user.title}}</a></div>
           <div class="chat-pan" v-bind:style="{ height: panHeight, overflow: 'auto' }">
             <ul>
               <li v-for="m in chat.msgs">
@@ -86,6 +86,9 @@
       },
       chat: function() {
         return this.$store.state.chat;
+      },
+      user: function() {
+        return typeof this.$store.state.users[this.chat.uid] != "undefined" ? this.$store.state.users[this.chat.uid] : {};
       }
     },
     created () {
