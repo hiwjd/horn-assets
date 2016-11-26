@@ -6,23 +6,16 @@
 
         <el-form :model="ruleForm" label-position="left" :rules="rules" ref="ruleForm" label-width="0" class="demo-ruleForm">
           <el-form-item>
-            <h2 style="margin-bottom:0px;">找回密码</h2>
+            <h2 style="margin-bottom:0px;">重置密码</h2>
           </el-form-item>
-          <el-form-item prop="email">
-            <el-input v-model="ruleForm.email" placeholder="邮箱"></el-input>
+          <el-form-item prop="pass">
+            <el-input type="password" v-model="ruleForm.pass" placeholder="新密码"></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-col :span="14">
-              <el-form-item prop="captcha">
-                <el-input v-model="ruleForm.captcha" placeholder="验证码"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="9" :offset="1">
-              <img :src="captchaUrl" class="el-input__inner" style="cursor:pointer; padding:0; border:none;" @click="refreshCaptcha" />
-            </el-col>
+          <el-form-item prop="repass">
+            <el-input type="password" v-model="ruleForm.repass" placeholder="确认密码"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click.native.prevent="handleSubmit" style="width:100%;">发送邮件</el-button>
+            <el-button type="primary" @click.native.prevent="handleSubmit" style="width:100%;">保存新密码</el-button>
           </el-form-item>
           <!--<el-form-item>
             <router-link to="/signin" class="el-button-text">登录</router-link>
@@ -44,40 +37,57 @@
       'AppHead': AppHead
     },
     data() {
+      var _this = this;
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入新密码'));
+        } else {
+          if (_this.ruleForm.repass !== '') {
+            _this.$refs.ruleForm.validateField('repass');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请确认新密码'));
+        } else if (value !== _this.ruleForm.pass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
         ruleForm: {
-          email: '',
-          captcha: ''
+          pass: '',
+          repass: '',
+          token: ''
         },
         rules: {
-          email: [
-            { required: true, message: '请输入邮箱', trigger: 'blur', type: 'email' }
+          pass: [
+            { validator: validatePass, trigger: 'blur' }
           ],
-          captcha: [
-            { required: true, message: '请输入验证码', trigger: 'blur' }
+          repass: [
+            { validator: validatePass2, trigger: 'blur' }
           ]
         },
         captchaRandom: (new Date()).getTime()
       };
     },
-    computed: {
-      captchaUrl: function() {
-        return window.HORN_API + "/captcha/find_pass?t=" + this.captchaRandom;
-      }
+    created () {
+      var q = qs.parse(window.location.search);
+      debugger;
+      this.ruleForm.token = q.token;
     },
     methods: {
       url(path) {
         return window.HORN_API + path;
       },
-      refreshCaptcha() {
-        this.captchaRandom = (new Date()).getTime();
-      },
       handleSubmit(ev) {
         var _self = this;
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            _self.$http.post(_self.url("/find_pass"), qs.stringify(_self.ruleForm)).then(function(res) {
-              _self.refreshCaptcha();
+            _self.$http.post(_self.url("/reset_pass"), qs.stringify(_self.ruleForm)).then(function(res) {
               _self.$message({
                 message: res.data.msg,
                 type: "info",
@@ -93,7 +103,6 @@
                 }
               });
             }).catch(function(error) {
-              _self.refreshCaptcha();
               _self.$message({
                 message: "发生了错误",
                 type: "error"
@@ -104,9 +113,6 @@
           }
         });
       }
-    },
-    created () {
-      console.log("Signin.vue created");
     }
   }
 </script>

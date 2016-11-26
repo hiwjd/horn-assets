@@ -8,11 +8,14 @@
           <el-form-item>
             <h2 style="margin-bottom:0px;">注册</h2>
           </el-form-item>
+          <el-form-item label="公司/团队" prop="com_name">
+            <el-input v-model="ruleForm.com_name" placeholder="公司／团队名称"></el-input>
+          </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="ruleForm.email" placeholder="登录邮箱"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="pass">
-            <el-input v-model="ruleForm.pass" placeholder="登录密码"></el-input>
+            <el-input type="password" v-model="ruleForm.pass" placeholder="登录密码"></el-input>
           </el-form-item>
           <el-form-item label="验证码">
             <el-col :span="14">
@@ -50,9 +53,13 @@
         ruleForm: {
           email: '',
           captcha: '',
-          pass: ''
+          pass: '',
+          com_name: ''
         },
         rules: {
+          com_name: [
+            { required: true, message: '请输入公司／团队名称', trigger: 'blur' }
+          ],
           email: [
             { required: true, message: '请输入邮箱', trigger: 'blur', type: 'email' }
           ],

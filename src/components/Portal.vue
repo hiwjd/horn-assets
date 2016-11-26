@@ -6,11 +6,11 @@
         </center>
         
         <ul class="menus">
-          <li @click="go('portalhome')" :class="{active: curMenu == 'portalhome'}">
+          <!-- <li @click="go('portalhome')" :class="{active: curMenu == 'portalhome'}">
             <el-tooltip class="item" effect="light" content="首页" placement="right">
               <i class="el-icon-menu"></i>
             </el-tooltip>
-          </li>
+          </li> -->
           <li @click="go('chat')" :class="{active: curMenu == 'chat'}">
             <el-tooltip class="item" effect="light" content="对话" placement="right">
               <i class="el-icon-message"></i>
@@ -21,11 +21,11 @@
               <i class="el-icon-star-on"></i>
             </el-tooltip>
           </li>
-          <li @click="go('tickets')" :class="{active: curMenu == 'tickets'}">
+          <!-- <li @click="go('tickets')" :class="{active: curMenu == 'tickets'}">
             <el-tooltip class="item" effect="light" content="工单" placement="right">
               <i class="el-icon-circle-check"></i>
             </el-tooltip>
-          </li>
+          </li> -->
           <li @click="go('history')" :class="{active: curMenu == 'history'}">
             <el-tooltip class="item" effect="light" content="历史" placement="right">
               <i class="el-icon-time"></i>
@@ -67,8 +67,7 @@
     },
     data () {
       return {
-        curMenu: this.$route.matched[1].name,
-        users: {"zzzzzz":{"id":"zzzzzz","msgs":[]}}
+        curMenu: this.$route.matched[1].name
       }
     },
     methods: {
@@ -125,6 +124,6 @@
   height: auto;
   position: absolute;
   right: 0;
-  background: #f2f3f5;
+  /*background: #f2f3f5;*/
 }
 </style>

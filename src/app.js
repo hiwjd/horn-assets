@@ -22,6 +22,8 @@ import History from './components/History.vue'
 import Report from './components/Report.vue'
 import Customer from './components/Customer.vue'
 import Setting from './components/Setting.vue'
+import ResetPass from './components/ResetPass.vue'
+import ErrorResetPass from './components/ErrorResetPass.vue'
 import state from './state.js'
 
 // 1. Use plugin.
@@ -88,19 +90,19 @@ const router = new VueRouter({
     { path: '/confirm', component: Confirm },
     { path: '/email_active', component: EmailActive },
     { path: '/find_pass', component: FindPass },
+    { path: '/reset_pass', component: ResetPass },
+    { path: '/error/reset_pass', component: ErrorResetPass },
     {
       path: '/portal', 
       component: Portal, 
       beforeEnter: requireAuth,
       children: [
-        { path: '', component: PortalHome, name: "portalhome" },
+        { path: '', component: PortalHome, name: "portalhome", redirect: "/portal/chat" },
         { 
           path: 'chat', 
           component: Chat, 
           name: "chat", 
           children: [
-            //{path: '', component: NoChat, name: 'nochat'}, 
-            //{path: '/', component: NoChat, name: 'nochat'}, 
             {path: ':uid', component: ChatCard, name: 'chatcard'},
             {path: '', component: NoChat, name: 'nochat'}
           ] 
@@ -110,7 +112,8 @@ const router = new VueRouter({
         { path: 'history', component: History, name: "history" },
         { path: 'report', component: Report, name: "report" },
         { path: 'customer', component: Customer, name: "customer" },
-        { path: 'setting', component: Setting, name: "setting" }
+        { path: 'setting', redirect: "setting/first" },
+        { path: 'setting/:name', component: Setting, name: "setting" }
       ]
     }
   ]

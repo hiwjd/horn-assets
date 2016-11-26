@@ -1,3 +1,3 @@
 <template>
-<div style="margin:20px; background-color: #fff;">PortalHome</div>
+<div style="padding: 20px;">HOME</div>
 </template>
