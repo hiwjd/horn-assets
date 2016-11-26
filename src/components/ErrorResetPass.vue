@@ -4,7 +4,7 @@
     <el-row class="view-center">
       <el-col :span="4" :offset="10">
 
-        <el-form :model="ruleForm" label-position="left" :rules="rules" ref="ruleForm" label-width="0" class="demo-ruleForm">
+        <el-form label-position="left" label-width="0" class="demo-ruleForm">
           <el-form-item>
             <h2 style="margin-bottom:0px;">重置密码</h2>
           </el-form-item>
