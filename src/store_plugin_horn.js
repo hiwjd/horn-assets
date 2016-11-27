@@ -2,9 +2,7 @@ export default function createHORNPlugin (HORN) {
   return store => {
 
     var host = window.HORN_API;//"http://app.horn.com:9092/api";
-
     HORN.HOST = window.HORN_API;
-    HORN.CID = "0DWOanOQ9IqkOd3";
 
     HORN.StaffInfo(function(res) {
       if(res.code == 0) {
@@ -15,6 +13,8 @@ export default function createHORNPlugin (HORN) {
     });
 
     function connect(param) {
+      HORN.CID = param.company.code;
+
       HORN.OnRestore(function(json) {
           if(json.state.chats) {
             var chats = json.state.chats;
