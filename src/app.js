@@ -112,8 +112,7 @@ const router = new VueRouter({
         { path: 'history', component: History, name: "history" },
         { path: 'report', component: Report, name: "report" },
         { path: 'customer', component: Customer, name: "customer" },
-        { path: 'setting', redirect: "setting/first" },
-        { path: 'setting/:name', component: Setting, name: "setting" }
+        { path: 'setting/:name?', component: Setting, name: "setting" }
       ]
     }
   ]
