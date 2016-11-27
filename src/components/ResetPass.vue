@@ -92,13 +92,8 @@
                 message: res.data.msg,
                 type: "info",
                 onClose: function() {
-                  if(res.data.code == '1000') {
-                    var route = _self.$route;
-                    if(route.query.redirect) {
-                      _self.$router.replace(route.query.redirect);
-                    } else {
-                      _self.$router.replace("/portal");
-                    }
+                  if(res.data.code == 0) {
+                    _self.$router.replace("/signin");
                   }
                 }
               });
