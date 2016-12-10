@@ -16,12 +16,12 @@ export default new Vuex.Store({
   mutations: {
     addChat (state, payload) {
         //if(payload.chat.mid > state.version) {
-            Vue.set(state.chats, payload.chat.id, payload.chat);
+            Vue.set(state.chats, payload.chat.cid, payload.chat);
         //}
     },
     addMsg (state, payload) {
         var msg = payload.msg,
-            chat = state.chats[msg.chat.id];
+            chat = state.chats[msg.chat.cid];
 
         if(chat && msg.mid > state.version) {
             chat.msgs.push(msg);

@@ -3,7 +3,7 @@
       <el-col :span="17">
         
         <div class="chat-card">
-          <div class="chat-tool">{{chat.id}} {{user.os}} {{user.browser}}</div>
+          <div class="chat-tool">{{chat.cid}} {{user.os}} {{user.browser}}</div>
           <div class="chat-tip">正在浏览 <a target="_blank" :href="user.url">{{user.title}}</a></div>
           <div class="chat-pan" v-bind:style="{ height: panHeight, overflow: 'auto' }">
             <ul>
@@ -116,7 +116,7 @@
       send: function() {
         var content = this.content;
         this.content = "";
-        HORN.SendMsgText(this.chat.id, content, function(j) {
+        HORN.SendMsgText(this.chat.cid, content, function(j) {
             console.log(j);
         }, function(j) {
             console.log(j);

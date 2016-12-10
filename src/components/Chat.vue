@@ -9,7 +9,7 @@
             </el-col>
             <el-col :span="20">
               <div>
-                {{chat.id}}
+                {{chat.cid}}
               </div>
               <div>
                 <el-tag type="gray">标签二</el-tag>
@@ -92,7 +92,7 @@
       choseu (chat, e) {
         console.log("choseu");
         this.$store.dispatch('choseChat', {chat: chat});
-        this.$router.push({ name:"chatcard", params: {uid: chat.id, chat:chat}, meta: {chat: chat} });
+        this.$router.push({ name:"chatcard", params: {uid: chat.cid, chat:chat}, meta: {chat: chat} });
       },
       handleResize: function(e) {
         this.height = window.innerHeight;
@@ -100,7 +100,7 @@
       },
       isActive: function(chat) {
         if(this.$store.state.chat) {
-          return this.$store.state.chat.id == chat.id;
+          return this.$store.state.chat.cid == chat.cid;
         }
         return false;
       }
