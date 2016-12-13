@@ -3,8 +3,8 @@
       <el-col :span="17">
         
         <div class="chat-card">
-          <div class="chat-tool">{{chat.cid}} {{user.os}} {{user.browser}}</div>
-          <div class="chat-tip">正在浏览 <a target="_blank" :href="user.url">{{user.title}}</a></div>
+          <div class="chat-tool">{{track.addr}}</div>
+          <div class="chat-tip">{{track.os}} {{track.browser}} 正在浏览 <a target="_blank" :href="track.url">{{track.title}}</a> IP:{{track.ip}}</div>
           <div class="chat-pan" v-bind:style="{ height: panHeight, overflow: 'auto' }">
             <ul>
               <li v-for="m in chat.msgs">
@@ -22,32 +22,23 @@
             </div>
             <div class="chat-editor-input">
               <textarea class="inputor" v-model="content" v-on:keydown.enter="enter" v-bind:style="{ height: '149px' }"></textarea>
-            </div>            
+            </div>
           </div>
         </div>
 
       </el-col>
       <el-col :span="7">
         <div class="chat-info">
-          访问信息
+          访问轨迹
           <ul>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
+          <li v-for="t in chat.tracks"><a target="_blank" :href="t.url">{{t.created_at}} {{t.title}}</a></li>
           </ul>
 
           访客信息
           <ul>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          </ul>
-
-          联系方式
-          <ul>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          <li>浙江省 杭州市 西湖区 山水人家白沙岛 7-2-502室</li>
+          <li>指纹 {{track.fp}}</li>
+          <li>VID {{chat.vid}}</li>
+          <li>IP {{track.ip}}</li>
           </ul>
 
           自定义信息
@@ -87,8 +78,15 @@
       chat: function() {
         return this.$store.state.chat;
       },
-      user: function() {
-        return typeof this.$store.state.users[this.chat.uid] != "undefined" ? this.$store.state.users[this.chat.uid] : {};
+      track: function() {
+        return this.$store.state.chat.tracks[0];
+      },
+      visitor: function() {
+        return this.$store.state.chat.visitor;
+        // // 存在访客信息则使用，没有的话使用对话里采集到的访客信息
+        // return typeof this.$store.state.visitors[this.chat.vid] != "undefined" 
+        //   ? this.$store.state.visitors[this.chat.vid] 
+        //   : this.$store.state.chat.track;
       }
     },
     created () {

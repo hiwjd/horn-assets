@@ -11,7 +11,7 @@ export default new Vuex.Store({
     version: "", // 全量同步状态时的版本，增量变更根据这个版本来判断是不是要适配
     chats: {}, // 所有的对话，键是对话ID
     chat: null, // 当前的对话
-    users: {}, // 所有的访客
+    visitors: {}, // 所有的访客
   },
   mutations: {
     addChat (state, payload) {
@@ -21,7 +21,7 @@ export default new Vuex.Store({
     },
     addMsg (state, payload) {
         var msg = payload.msg,
-            chat = state.chats[msg.chat.cid];
+            chat = state.chats[msg.cid];
 
         if(chat && msg.mid > state.version) {
             chat.msgs.push(msg);
@@ -33,8 +33,8 @@ export default new Vuex.Store({
     setVersion (state, payload) {
         state.version = payload.version;
     },
-    addUser (state, payload) {
-        Vue.set(state.users, payload.user.uid, payload.user);
+    addVisitor (state, payload) {
+        Vue.set(state.visitors, payload.visitor.vid, payload.visitor);
     }
   },
   actions: {
@@ -50,8 +50,8 @@ export default new Vuex.Store({
     setVersion (context, payload) {
         context.commit('setVersion', payload);
     },
-    addUser (context, payload) {
-        context.commit('addUser', payload);
+    addVisitor (context, payload) {
+        context.commit('addVisitor', payload);
     }
   },
   plugins: [plugin]

@@ -3,7 +3,7 @@
         Visitor
         <div>
             <ul>
-                <li v-for="user in users">{{user.uid}} {{user.os}} {{user.browser}} <a target="_blank" :href="user.url">{{user.title}}</a></li>
+                <li v-for="visitor in visitors">{{visitor.vid}} {{visitor.os}} {{visitor.browser}} <a target="_blank" :href="visitor.url">{{visitor.title}}</a></li>
             </ul>
         </div>
     </div>
@@ -16,7 +16,7 @@
             function fetch() {
                 HORN.GetOnlineUserList(function(r) {
                     for(var i=0; i<r.data.length; i++) {
-                        _self.$store.dispatch("addUser", {user: r.data[i]});
+                        _self.$store.dispatch("addVisitor", {visitor: r.data[i]});
                     }
                 }, function(err) {
                     alert(err);
@@ -28,8 +28,8 @@
             setInterval(fetch, 5000);
         },
         computed: {
-            users() {
-                return this.$store.state.users;
+            visitors() {
+                return this.$store.state.visitors;
             }
         }
     }

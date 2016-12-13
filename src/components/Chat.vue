@@ -4,16 +4,9 @@
     <div class="chat-list" v-bind:style="{ height:computedHeight, background: '#fff', overflow: 'auto' }">
       <div v-if="chats" class="chat-item" v-for="chat in chats" :class="{active: isActive(chat)}" @click="choseu(chat, $event)">
           <el-row>
-            <el-col :span="4">
-              <img src="http://placehold.it/40x40">
-            </el-col>
-            <el-col :span="20">
+            <el-col :span="24">
               <div>
-                {{chat.cid}}
-              </div>
-              <div>
-                <el-tag type="gray">标签二</el-tag>
-                <el-tag type="primary">标签三</el-tag>
+                {{chat.tracks[0].addr}}
               </div>
             </el-col>
           </el-row>
