@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="chat-list" v-bind:style="{ height:computedHeight, background: '#fff', overflow: 'auto' }">
+    <div class="chat-list" v-bind:style="{ height:computedHeight, overflow: 'auto' }">
       <div v-if="chats" class="chat-item" v-for="chat in chats" :class="{active: isActive(chat)}" @click="choseu(chat, $event)">
           <el-row>
             <el-col :span="24">
@@ -17,7 +17,7 @@
     </div>
 
     <el-row style="margin-left: 260px;">
-      <el-col :span="24" style="border-right:1px solid #efefef; height:100%;">
+      <el-col :span="24" style="height:100%;background:#F9FAFC;">
         <router-view :height="height"></router-view>
       </el-col>
     </el-row>
@@ -118,19 +118,22 @@
   height: 100%;
   float: left;
   box-sizing: border-box;
-  background-color: #f5f7fa;
-  box-shadow: inset -1px 0 0 #e1e4eb;
+  background-color: #475669;
+  /*box-shadow: inset -1px 0 0 #e1e4eb;*/
   position: fixed;
+  color: #ffffff;
 }
 .chat-item {
   padding: 10px; 
   cursor:pointer;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
+  color: #D3DCE6;
 }
 .active {
-  background-color: #f5f7fa;
-  border-right: 2px solid red;
+  background-color: #2c8dff;
+  color: #fff;
+  /*border-right: 2px solid red;*/
 }
 .chat-item .el-tag {
   font-size: 12px;

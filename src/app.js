@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import { sync } from 'vuex-router-sync'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+import moment from 'moment'
 import axios from 'axios'
 import App from './components/App.vue'
 import Signin from './components/Signin.vue'
@@ -32,6 +33,15 @@ import state from './state.js'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
+
+moment.locale("zh-cn");
+Vue.filter('moment_fromnow', function (value) {
+  return moment(value, "YYYY-MM-DD").fromNow();
+});
+Vue.filter('msgtime', function (value) {
+  return moment(value*1000).format("AHH:mm");
+  //return moment(value, "YYYY-MM-DD").fromNow();
+});
 
 axios.defaults.withCredentials = true;
 Vue.prototype.$http = axios

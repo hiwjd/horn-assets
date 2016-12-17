@@ -6,7 +6,14 @@
           <div class="chat-tool">{{track.addr}}</div>
           <div class="chat-tip">{{track.os}} {{track.browser}} 正在浏览 <a target="_blank" :href="track.url">{{track.title}}</a> IP:{{track.ip}}</div>
           <div class="chat-pan" v-bind:style="{ height: panHeight, overflow: 'auto' }">
-            <ul>
+            <div v-for="m in chat.msgs" class="message" :class="[m.type, {me:m.from.uid==me.sid}]">
+              <div class="m-from">
+                <span class="m-name">{{m.from.name||'&nbsp;'}}</span>
+                <span class="m-time">{{m.created_at|msgtime}}</span>
+              </div>
+              <div class="m-text">{{m.text}}</div>
+            </div>
+            <!-- <ul>
               <li v-for="m in chat.msgs">
                 <pre v-if="m.type=='text'">{{m.text}}</pre>
                 <pre v-if="m.type=='image'">图片{{m.image.src}}</pre>
@@ -14,7 +21,7 @@
                 <pre v-if="m.type=='request_chat'">收到请求对话</pre>
                 <pre v-if="m.type=='join_chat'">收到加入对话</pre>
               </li>
-            </ul>
+            </ul> -->
           </div>
           <div class="chat-editor">
             <div class="chat-editor-tool">
@@ -29,31 +36,41 @@
       </el-col>
       <el-col :span="7">
         <div class="chat-info">
-          访问轨迹
-          <ul>
-          <li v-for="t in chat.tracks"><a target="_blank" :href="t.url">{{t.created_at}} {{t.title}}</a></li>
-          </ul>
 
-          访客信息
-          <ul>
-          <li>指纹 {{track.fp}}</li>
-          <li>VID {{chat.vid}}</li>
-          <li>IP {{track.ip}}</li>
-          </ul>
+          <div class="infocard">
+            <div class="infocard-head">访问轨迹</div>
+            <div class="infocard-body">
+              <div v-for="t in chat.tracks"><a target="_blank" :href="t.url">{{t.created_at|moment_fromnow}} {{t.title}}</a></div>
+            </div>
+          </div>
 
-          自定义信息
-          <ul>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          </ul>
+          <div class="infocard">
+            <div class="infocard-head">访客信息</div>
+            <div class="infocard-body">
+              <div>指纹 {{track.fp}}</div>
+              <div>VID {{chat.vid}}</div>
+              <div>IP {{track.ip}}</div>
+            </div>
+          </div>
 
-          标签
-          <ul>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          <li>xxxxx</li>
-          </ul>
+          <div class="infocard">
+            <div class="infocard-head">自定义信息</div>
+            <div class="infocard-body">
+              <div>xxxxx</div>
+              <div>xxxxx</div>
+              <div>xxxxx</div>
+            </div>
+          </div>
+
+          <div class="infocard">
+            <div class="infocard-head">标签</div>
+            <div class="infocard-body">
+              <el-tag type="primary">标签三</el-tag>
+              <el-tag type="success">标签四</el-tag>
+              <el-tag type="warning">标签五</el-tag>
+            </div>
+          </div>
+
         </div>
       </el-col>
     </el-row>
@@ -72,7 +89,7 @@
     },
     computed: {
       panHeight: function() {
-        var _h = this.height - 277;
+        var _h = this.height - 297;
         return _h + "px";
       },
       chat: function() {
@@ -87,6 +104,9 @@
         // return typeof this.$store.state.visitors[this.chat.vid] != "undefined" 
         //   ? this.$store.state.visitors[this.chat.vid] 
         //   : this.$store.state.chat.track;
+      },
+      me: function() {
+        return this.$store.state.me;
       }
     },
     created () {
@@ -158,6 +178,7 @@ textarea.inputor {
   border-bottom: 1px solid #efefef;
   min-height: 200px;
   font-size: 13px;
+  padding: 10px;
 }
 .chat-editor {
   min-height: 200px;
@@ -172,7 +193,54 @@ textarea.inputor {
   padding: 0 10px 10px 10px;
 }
 .chat-info {
-  padding: 30px;
+  padding: 20px;
   font-size: 12px;
+}
+
+.message {
+    font-size: 12px;
+    margin-bottom: 15px;
+    display: inline-block;
+    width: 100%;
+}
+.message .m-from {
+    color: gray;
+    margin-bottom: 5px;
+}
+.message .m-text {
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 3px;
+    display: inline-block;
+    max-width: 50%;
+    background-color: #efefef;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+.message .m-from .m-time {
+    margin-left: 10px;
+}
+.me .m-text {
+  float: right;
+}
+.me .m-from .m-time {
+  float: right;
+}
+.me .m-from .m-name {
+  visibility: hidden;
+}
+
+.infocard {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #EFF2F7;
+  color: #000;
+}
+.infocard-head {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.infocard a {
+  text-decoration: none;
 }
 </style>

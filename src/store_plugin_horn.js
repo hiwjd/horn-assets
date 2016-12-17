@@ -14,6 +14,7 @@ export default function createHORNPlugin (HORN) {
 
     function connect(param) {
       HORN.OID = param.org.oid;
+      store.dispatch('setMe', {me: param});
 
       HORN.OnRestore(function(json) {
           if(json.state.chats) {
@@ -38,13 +39,17 @@ export default function createHORNPlugin (HORN) {
                         store.dispatch('addMsg', {msg: m});
                       break;
                       case "request_chat":
-                        if(store.state.version == null || m.mid > store.state.version) {
+                        if(/*store.state.version == null || */m.mid > store.state.version) {
                           HORN.JoinChat(m.event.chat.cid, function(j) {console.log(arguments);}, function() {console.log(arguments);});
                           m.event.chat.msgs = [];
+                          m.event.chat.track = m.event.track;
                           store.dispatch('addChat', {chat: m.event.chat});
                         }
                       break;
                       case "join_chat":
+                      break;
+                      case "track":
+                        store.dispatch("updateVisitor", m.track);
                       break;
                   }
               }
@@ -58,7 +63,8 @@ export default function createHORNPlugin (HORN) {
       HORN.Init({
           uid: param.sid,
           role: "staff",
-          tid: param.tid
+          tid: param.tid,
+          name: "客服1"
       });
 
       HORN.StartHeartbeat(function(r) {

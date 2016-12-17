@@ -8,10 +8,12 @@ const plugin = createHORNPlugin(HORN)
 
 export default new Vuex.Store({
   state: {
+    me: {},
     version: "", // 全量同步状态时的版本，增量变更根据这个版本来判断是不是要适配
     chats: {}, // 所有的对话，键是对话ID
     chat: null, // 当前的对话
-    visitors: {}, // 所有的访客
+    visitors: [], // 所有的访客
+    visitorsIndex: {}, // 访客以ID为索引
   },
   mutations: {
     addChat (state, payload) {
@@ -33,8 +35,26 @@ export default new Vuex.Store({
     setVersion (state, payload) {
         state.version = payload.version;
     },
-    addVisitor (state, payload) {
-        Vue.set(state.visitors, payload.visitor.vid, payload.visitor);
+    fetchVisitors (state, payload) {
+        state.visitors = payload;
+        for(var i=0; i<payload.length; i++) {
+            state.visitorsIndex[payload[i].vid] = payload[i];
+        }
+    },
+    updateVisitor (state, payload) {
+        //debugger;
+        var v = state.visitorsIndex[payload.vid];
+        if(v) {
+            for(var key in payload) {
+                Vue.set(state.visitorsIndex[payload.vid], key, payload[key]);
+            }
+        } else {
+            state.visitors.push(payload);
+            state.visitorsIndex[payload.vid] = payload;
+        }
+    },
+    setMe (state, payload) {
+        state.me = payload.me;
     }
   },
   actions: {
@@ -50,8 +70,18 @@ export default new Vuex.Store({
     setVersion (context, payload) {
         context.commit('setVersion', payload);
     },
-    addVisitor (context, payload) {
-        context.commit('addVisitor', payload);
+    fetchVisitors (context, payload) {
+        HORN.GetOnlineUserList(function(r) {
+            context.commit('fetchVisitors', r.data);
+        }, function(err) {
+            alert(err);
+        });
+    },
+    updateVisitor (context, payload) {
+        context.commit('updateVisitor', payload);
+    },
+    setMe (context, payload) {
+        context.commit('setMe', payload);
     }
   },
   plugins: [plugin]

@@ -1,11 +1,12 @@
 <template>
-    <div>
+    <div class="pad">
         <h3>设置 {{activeName2}}</h3>
+
         <el-tabs :active-name="activeName2" @tab-click="change">
             <el-tab-pane label="客服管理" name="first">
                 <el-table
                     :data="tableData3"
-                    height="250"
+                    height="450"
                     border
                     style="width: 100%">
                     <el-table-column
@@ -91,10 +92,12 @@
 
 <style scoped>
 h3 {
-    margin-bottom: 0;
-    padding: 0 20px;
+    margin-top: 0;
+}
+.pad {
+    padding: 20px;
 }
 .el-tabs {
-    margin: 20px;
+  width: 100%;
 }
 </style>

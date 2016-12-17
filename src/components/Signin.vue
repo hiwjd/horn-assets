@@ -25,7 +25,7 @@
             </el-col>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click.native.prevent="handleSubmit" style="width:100%;">登录</el-button>
+            <el-button type="primary" @click.native.prevent="handleSubmit" v-loading.fullscreen.lock="fullscreenLoading" style="width:100%;">登录</el-button>
           </el-form-item>
           <el-form-item>
             <router-link to="/find_pass" class="el-button-text">找回密码</router-link>
@@ -48,6 +48,7 @@
     },
     data() {
       return {
+        fullscreenLoading: false,
         ruleForm: {
           email: '',
           pass: '',
@@ -91,12 +92,16 @@
                 type: "info",
                 onClose: function() {
                   if(res.data.code == 0) {
+                    _self.fullscreenLoading = true;
                     var route = _self.$route;
                     if(route.query.redirect) {
                       _self.$router.replace(route.query.redirect);
                     } else {
                       _self.$router.replace("/portal");
                     }
+                    setTimeout(() => {
+                      _self.fullscreenLoading = false;
+                    }, 2000);
                   }
                 }
               });
