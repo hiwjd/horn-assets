@@ -7,47 +7,47 @@
         
         <ul class="menus">
           <!-- <li @click="go('portalhome')" :class="{active: curMenu == 'portalhome'}">
-            <el-tooltip class="item" effect="light" content="首页" placement="right">
+            <el-tooltip class="item" content="首页" placement="right">
               <i class="el-icon-menu"></i>
             </el-tooltip>
           </li> -->
           <li @click="go('chat')" :class="{active: curMenu == 'chat'}">
-            <el-tooltip class="item" effect="light" content="对话" placement="right">
+            <el-tooltip class="item" content="对话" placement="right">
               <i class="el-icon-message"></i>
             </el-tooltip>
           </li>
           <li @click="go('visitor')" :class="{active: curMenu == 'visitor'}">
-            <el-tooltip class="item" effect="light" content="访客" placement="right">
+            <el-tooltip class="item" content="访客" placement="right">
               <i class="el-icon-star-on"></i>
             </el-tooltip>
           </li>
           <!-- <li @click="go('tickets')" :class="{active: curMenu == 'tickets'}">
-            <el-tooltip class="item" effect="light" content="工单" placement="right">
+            <el-tooltip class="item" content="工单" placement="right">
               <i class="el-icon-circle-check"></i>
             </el-tooltip>
           </li> -->
           <li @click="go('history')" :class="{active: curMenu == 'history'}">
-            <el-tooltip class="item" effect="light" content="历史对话" placement="right">
+            <el-tooltip class="item" content="历史对话" placement="right">
               <i class="el-icon-time"></i>
             </el-tooltip>
           </li>
           <!-- <li @click="go('report')" :class="{active: curMenu == 'report'}">
-            <el-tooltip class="item" effect="light" content="报表" placement="right">
+            <el-tooltip class="item" content="报表" placement="right">
               <i class="el-icon-picture"></i>
             </el-tooltip>
           </li> -->
           <!-- <li @click="go('customer')" :class="{active: curMenu == 'customer'}">
-            <el-tooltip class="item" effect="light" content="顾客" placement="right">
+            <el-tooltip class="item" content="顾客" placement="right">
               <i class="el-icon-star-off"></i>
             </el-tooltip>
           </li> -->
           <li @click="go('setting')" :class="{active: curMenu == 'setting'}">
-            <el-tooltip class="item" effect="light" content="设置" placement="right">
+            <el-tooltip class="item" content="设置" placement="right">
               <i class="el-icon-setting"></i>
             </el-tooltip>
           </li>
           <li @click="signout">
-            <el-tooltip class="item" effect="light" content="退出" placement="right">
+            <el-tooltip class="item" content="退出" placement="right">
               <i class="el-icon-minus"></i>
             </el-tooltip>
           </li>
@@ -107,6 +107,7 @@
 .left-nav ul.menus {
   margin: 50px 0 0 0;
   padding: 0;
+  list-style-type: none;
 }
 .left-nav ul.menus li {
   text-align: center;
@@ -120,7 +121,7 @@
   border-right: 2px solid #13CE66;
 }
 .left-nav ul.menus li:hover {
-  background-color: #2a2b39;
+  background-color: #475669;
 }
 .right-body {
   width: calc(100% - 72px);
