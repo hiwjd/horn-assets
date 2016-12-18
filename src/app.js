@@ -39,7 +39,7 @@ Vue.filter('moment_fromnow', function (value) {
   return moment(value, "YYYY-MM-DD").fromNow();
 });
 Vue.filter('msgtime', function (value) {
-  return moment(value*1000).format("AHH:mm");
+  return moment(value).format("AHH:mm");
   //return moment(value, "YYYY-MM-DD").fromNow();
 });
 
