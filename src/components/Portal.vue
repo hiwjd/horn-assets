@@ -119,6 +119,7 @@
   /*background-color: #fff;
   width: 59px;*/
   border-right: 2px solid #13CE66;
+  color: #13CE66;
 }
 .left-nav ul.menus li:hover {
   background-color: #475669;

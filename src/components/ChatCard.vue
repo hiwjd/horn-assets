@@ -2,7 +2,7 @@
   <el-row>
       <el-col :span="17">
         
-        <div class="chat-card">
+        <div class="chat-card" v-if="chat">
           <div class="chat-tool">{{track.addr}}</div>
           <div class="chat-tip">{{track.os}} {{track.browser}} 正在浏览 <a target="_blank" :href="track.url">{{track.title}}</a> IP:{{track.ip}}</div>
           <div class="chat-pan" v-bind:style="{ height: panHeight, overflow: 'auto' }">
@@ -35,7 +35,7 @@
 
       </el-col>
       <el-col :span="7">
-        <div class="chat-info">
+        <div class="chat-info" v-if="chat">
 
           <div class="infocard">
             <div class="infocard-head">访问轨迹</div>
@@ -62,12 +62,21 @@
             </div>
           </div>
 
+          <el-popover
+            ref="popover5"
+            placement="top"
+            width="160"
+            v-model="tagPopVisible">
+            <div>
+              <span v-if="allTags.length==0">无标签</span>
+              <span v-else v-for="tag in allTags" :class="['el-tag', 'el-tag--'+tag.color]" @click="attachTag(tag)" style="cursor:pointer; margin:5px;">{{tag.name}}</span>
+            </div>
+          </el-popover>
+
           <div class="infocard">
-            <div class="infocard-head">标签</div>
+            <div class="infocard-head">标签 <el-button type="info" size="mini" :plain="true" icon="plus" v-popover:popover5></el-button></div>
             <div class="infocard-body">
-              <el-tag type="primary">标签三</el-tag>
-              <el-tag type="success">标签四</el-tag>
-              <el-tag type="warning">标签五</el-tag>
+              <el-tag v-for="tag in tags" :type="tag.color" style="margin:5px;" :closable="true" @close="detachTag(tag)">{{tag.name}}</el-tag>
             </div>
           </div>
 
@@ -84,7 +93,8 @@
       return {
         text: "Hello World!",
         content: "",
-        ctrl: false
+        ctrl: false,
+        tagPopVisible: false
       }
     },
     computed: {
@@ -94,6 +104,9 @@
       },
       chat: function() {
         return this.$store.state.chat;
+      },
+      tags: function() {
+        return this.$store.state.chat.tags;
       },
       track: function() {
         return this.$store.state.chat.tracks[0];
@@ -107,13 +120,28 @@
       },
       me: function() {
         return this.$store.state.me;
+      },
+      allTags: function() {
+        if(!this.tags) {
+          return this.$store.state.tags;
+        }
+
+        var self = this;
+        return this.$store.state.tags.filter(function(tag) {
+          return self.tags.indexOf(tag) == -1;
+        });
       }
     },
     created () {
       console.log("ChatCard.vue created");
     },
     watch: {
+      'chat.cid': function(cid) {
+        console.log("chat change " + cid);
+        this.$store.dispatch("fetchTags", {cid: cid});
+      },
       'chat.msgs': function() {
+        console.log("chat.msgs change");
         this.$nextTick(function() {
           var chatpan = this.$el.querySelector(".chat-pan");
           if(chatpan) {
@@ -139,6 +167,13 @@
         }, function(j) {
             console.log(j);
         });
+      },
+      detachTag: function(tag) {
+        this.$store.dispatch("detachTag", {tag: tag});
+      },
+      attachTag: function(tag) {
+        this.$store.dispatch("attachTag", {tag: tag});
+        this.tagPopVisible = false;
       }
     }
   }

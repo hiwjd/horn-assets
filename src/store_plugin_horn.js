@@ -71,6 +71,10 @@ export default function createHORNPlugin (HORN) {
         console.error(r);
         return 3;
       });
+
+      HORN.GetTags(function(r) {
+        store.dispatch("setTags", {tags: r});
+      });
     }
   }
 }

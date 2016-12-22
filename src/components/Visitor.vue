@@ -51,14 +51,14 @@
           <el-tag :type="row.tag2 === '家' ? 'primary' : 'success'" close-transition>{{row.tag2}}</el-tag>
         </el-table-column>
         <el-table-column
-      inline-template
-      :context="_self"
-      label="操作"
-      width="100">
-      <span>
-        <el-button @click="invite(row)" type="text" size="small">邀请对话</el-button>
-      </span>
-    </el-table-column>
+          inline-template
+          :context="_self"
+          label="操作"
+          width="100">
+          <span>
+            <el-button @click="invite(row)" type="text" size="small">邀请对话</el-button>
+          </span>
+        </el-table-column>
       </el-table>
     </div>
 </template>
