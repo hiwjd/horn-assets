@@ -47,20 +47,54 @@
           <div class="infocard">
             <div class="infocard-head">访客信息</div>
             <div class="infocard-body">
-              <div>指纹 {{track.fp}}</div>
-              <div>VID {{chat.vid}}</div>
-              <div>IP {{track.ip}}</div>
+              <div>
+                <span class="visitor-info-label">姓名</span>
+                <input class="visitor-info-editor" type="text" name="name" v-model.lazy="visitorName">
+              </div>
+              <div>
+                <span class="visitor-info-label">性别</span>
+                <!-- <input class="visitor-info-editor" type="text" name="gender" v-model.lazy="visitorGender"> -->
+                <select class="visitor-info-editor" name="gender" v-model.lazy="visitorGender">
+                  <option value="未知">未知</option>
+                  <option value="男">男</option>
+                  <option value="女">女</option>
+                </select>
+              </div>
+              <div>
+                <span class="visitor-info-label">年龄</span>
+                <input class="visitor-info-editor" type="text" name="age" v-model.number.lazy="visitorAge">
+              </div>
+              <div>
+                <span class="visitor-info-label">手机</span>
+                <input class="visitor-info-editor" type="text" name="mobile" v-model.lazy="visitorMobile">
+              </div>
+              <div>
+                <span class="visitor-info-label">邮箱</span>
+                <input class="visitor-info-editor" type="text" name="email" v-model.lazy="visitorEmail">
+              </div>
+              <div>
+                <span class="visitor-info-label">QQ</span>
+                <input class="visitor-info-editor" type="text" name="qq" v-model.lazy="visitorQQ">
+              </div>
+              <div>
+                <span class="visitor-info-label">地址</span>
+                <input class="visitor-info-editor" type="text" name="addr" v-model.lazy="visitorAddr">
+              </div>
+              <div>
+                <span class="visitor-info-label">备注</span>
+                <input class="visitor-info-editor" type="text" name="note" v-model.lazy="visitorNote">
+              </div>
             </div>
           </div>
 
-          <div class="infocard">
+          <!-- <div class="infocard">
             <div class="infocard-head">自定义信息</div>
             <div class="infocard-body">
               <div>xxxxx</div>
               <div>xxxxx</div>
               <div>xxxxx</div>
             </div>
-          </div>
+          </div> -->
 
           <el-popover
             ref="popover5"
@@ -111,12 +145,72 @@
       track: function() {
         return this.$store.state.chat.tracks[0];
       },
+      visitorName: {
+        get () {
+          return this.$store.state.chat.visitor.name;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "name", value);
+        }
+      },
+      visitorGender: {
+        get () {
+          return this.$store.state.chat.visitor.gender;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "gender", value);
+        }
+      },
+      visitorAge: {
+        get () {
+          return this.$store.state.chat.visitor.age;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "age", value);
+        }
+      },
+      visitorMobile: {
+        get () {
+          return this.$store.state.chat.visitor.mobile;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "mobile", value);
+        }
+      },
+      visitorEmail: {
+        get () {
+          return this.$store.state.chat.visitor.email;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "email", value);
+        }
+      },
+      visitorQQ: {
+        get () {
+          return this.$store.state.chat.visitor.qq;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "qq", value);
+        }
+      },
+      visitorAddr: {
+        get () {
+          return this.$store.state.chat.visitor.addr;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "addr", value);
+        }
+      },
+      visitorNote: {
+        get () {
+          return this.$store.state.chat.visitor.note;
+        },
+        set (value) {
+          this.saveVisitorInfo(this.visitor.vid, "note", value);
+        }
+      },
       visitor: function() {
         return this.$store.state.chat.visitor;
-        // // 存在访客信息则使用，没有的话使用对话里采集到的访客信息
-        // return typeof this.$store.state.visitors[this.chat.vid] != "undefined" 
-        //   ? this.$store.state.visitors[this.chat.vid] 
-        //   : this.$store.state.chat.track;
       },
       me: function() {
         return this.$store.state.me;
@@ -138,7 +232,7 @@
     watch: {
       'chat.cid': function(cid) {
         console.log("chat change " + cid);
-        this.$store.dispatch("fetchTags", {cid: cid});
+        this.$store.dispatch("fetchVisitorTags", {cid: cid});
       },
       'chat.msgs': function() {
         console.log("chat.msgs change");
@@ -174,6 +268,13 @@
       attachTag: function(tag) {
         this.$store.dispatch("attachTag", {tag: tag});
         this.tagPopVisible = false;
+      },
+      saveVisitorInfo: function(vid, key, value) {
+        if(this.visitor[key] != value) {
+          var data = {};
+          data[key] = value;
+          this.$store.dispatch("updateVisitorInfo", {vid: vid, data: data});
+        }
       }
     }
   }
@@ -277,5 +378,18 @@ textarea.inputor {
 }
 .infocard a {
   text-decoration: none;
+}
+.visitor-info-editor {
+  border: none;
+  background: #F9FAFC;
+}
+.visitor-info-editor:focus {
+  background: #fff9c2;
+  outline: none; 
+}
+.visitor-info-label {
+  width: 30px;
+  display: inline-block;
+  color: gray;
 }
 </style>

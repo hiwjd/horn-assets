@@ -45,7 +45,6 @@ export default new Vuex.Store({
         }
     },
     updateVisitor (state, payload) {
-        //debugger;
         var v = state.visitorsIndex[payload.vid];
         if(v) {
             for(var key in payload) {
@@ -72,8 +71,11 @@ export default new Vuex.Store({
         state.tags = payload.tags;
     },
     updateVisitorInfo (state, payload) {
-        //var visitor = state.visitorsIndex[payload.vid];
-        Vue.set(state.chat.visitor, payload.name, payload.value);
+        var data = payload.data;
+
+        for(var k in data) {
+            Vue.set(state.chat.visitor, k, data[k]);
+        }
     },
     saveStaff (state, payload) {
         state.staffs.push(payload);
@@ -130,11 +132,6 @@ export default new Vuex.Store({
             console.log("action.fetchVisitorTags");
             context.commit('fetchVisitorTags', {tags: r});
         });
-
-        // setTimeout(function() {
-        //   console.log("action.fetchVisitorTags");
-        //   context.commit('fetchVisitorTags', {tags: [{name:"好客户",color:"primary"}]});
-        // }, 800);
     },
     fetchTags (context, payload) {
         return new Promise((resolve, reject) => {
@@ -147,7 +144,6 @@ export default new Vuex.Store({
     saveTag (context, payload) {
         return new Promise((resolve, reject) => {
           HORN.SaveTag(payload.tagId, payload.name, payload.color, function(r) {
-            //context.commit("fetchTags", {tags: r});
             resolve();
           });
         });
@@ -155,15 +151,14 @@ export default new Vuex.Store({
     deleteTag (context, payload) {
         return new Promise((resolve, reject) => {
           HORN.DeleteTag(payload.tagId, function(r) {
-            //context.commit("fetchTags", {tags: r});
             resolve();
           });
         });
     },
     updateVisitorInfo (context, payload) {
         return new Promise((resolve, reject) => {
-          HORN.DeleteTag(payload.name+":"+payload.value, function(r) {
-            //context.commit("fetchTags", {tags: r});
+          HORN.UpdateVisitorInfo(payload.vid, payload.data, function(r) {
+            context.commit("updateVisitorInfo", payload);
             resolve();
           });
         });
@@ -180,7 +175,6 @@ export default new Vuex.Store({
     fetchStaffs (context, payload) {
         return new Promise((resolve, reject) => {
             HORN.FetchStaffs(payload, function(r) {
-                //debugger;
                 context.commit("fetchStaffs", r.data);
                 resolve(r);
             });
