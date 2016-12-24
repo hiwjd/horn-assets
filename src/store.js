@@ -7,6 +7,7 @@ Vue.use(Vuex)
 const plugin = createHORNPlugin(HORN)
 
 export default new Vuex.Store({
+  strict: true,
   state: {
     me: {},
     version: "", // 全量同步状态时的版本，增量变更根据这个版本来判断是不是要适配
@@ -15,6 +16,7 @@ export default new Vuex.Store({
     visitors: [], // 所有的访客
     visitorsIndex: {}, // 访客以ID为索引
     tags: [],
+    staffs: []
   },
   mutations: {
     addChat (state, payload) {
@@ -63,11 +65,21 @@ export default new Vuex.Store({
     attachTag (state, payload) {
         state.chat.tags.push(payload.tag);
     },
-    fetchTags (state, payload) {
+    fetchVisitorTags (state, payload) {
         Vue.set(state.chat, 'tags', payload.tags);
     },
-    setTags (state, payload) {
+    fetchTags (state, payload) {
         state.tags = payload.tags;
+    },
+    updateVisitorInfo (state, payload) {
+        //var visitor = state.visitorsIndex[payload.vid];
+        Vue.set(state.chat.visitor, payload.name, payload.value);
+    },
+    saveStaff (state, payload) {
+        state.staffs.push(payload);
+    },
+    fetchStaffs (state, payload) {
+        state.staffs = payload;
     }
   },
   actions: {
@@ -106,7 +118,7 @@ export default new Vuex.Store({
             context.commit('attachTag', payload);
         });
     },
-    fetchTags (context, payload) {
+    fetchVisitorTags (context, payload) {
         var self = this;
         var cid = payload.cid;
 
@@ -115,17 +127,64 @@ export default new Vuex.Store({
         }
 
         HORN.GetTagsByVid(context.state.chat.vid, function(r) {
-            console.log("action.fetchTags");
-            context.commit('fetchTags', {tags: r});
+            console.log("action.fetchVisitorTags");
+            context.commit('fetchVisitorTags', {tags: r});
         });
 
         // setTimeout(function() {
-        //   console.log("action.fetchTags");
-        //   context.commit('fetchTags', {tags: [{name:"好客户",color:"primary"}]});
+        //   console.log("action.fetchVisitorTags");
+        //   context.commit('fetchVisitorTags', {tags: [{name:"好客户",color:"primary"}]});
         // }, 800);
     },
-    setTags (context, payload) {
-        context.commit("setTags", payload);
+    fetchTags (context, payload) {
+        return new Promise((resolve, reject) => {
+          HORN.GetTags(function(r) {
+            context.commit("fetchTags", {tags: r});
+            resolve(r);
+          });
+        });
+    },
+    saveTag (context, payload) {
+        return new Promise((resolve, reject) => {
+          HORN.SaveTag(payload.tagId, payload.name, payload.color, function(r) {
+            //context.commit("fetchTags", {tags: r});
+            resolve();
+          });
+        });
+    },
+    deleteTag (context, payload) {
+        return new Promise((resolve, reject) => {
+          HORN.DeleteTag(payload.tagId, function(r) {
+            //context.commit("fetchTags", {tags: r});
+            resolve();
+          });
+        });
+    },
+    updateVisitorInfo (context, payload) {
+        return new Promise((resolve, reject) => {
+          HORN.DeleteTag(payload.name+":"+payload.value, function(r) {
+            //context.commit("fetchTags", {tags: r});
+            resolve();
+          });
+        });
+    },
+    saveStaff (context, payload) {
+        return new Promise((resolve, reject) => {
+            HORN.SaveStaff(payload, function(r) {
+                payload.id = r.id;
+                context.commit("saveStaff", payload);
+                resolve();
+            });
+        });
+    },
+    fetchStaffs (context, payload) {
+        return new Promise((resolve, reject) => {
+            HORN.FetchStaffs(payload, function(r) {
+                //debugger;
+                context.commit("fetchStaffs", r.data);
+                resolve(r);
+            });
+        });
     }
   },
   plugins: [plugin]
