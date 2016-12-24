@@ -3,14 +3,19 @@
     <h3>{{settingTitle}}</h3>
 
         <el-tabs :active-name="settingName" @tab-click="change">
+
+            <!-- 客服管理 开始 -->
             <el-tab-pane label="客服管理" name="staff">
               <div style="margin-bottom: 20px;">
                 <el-button type="success" size="small" @click="fetchStaffs">刷新</el-button>
                 <el-button type="primary" size="small" @click="staffFormDialog=true">添加</el-button>
               </div>
 
-              <el-dialog title="客服管理" v-model="staffFormDialog" size="tiny">
+              <el-dialog title="客服管理" v-model="staffFormDialog" size="tiny" :show-close="showClose" :close-on-click-modal="showClose" :close-on-press-escape="showClose">
                 <el-form :model="staffForm" :rules="staffRules" ref="staffForm" label-width="60px">
+                  <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="staffForm.email" auto-complete="off" size="small" :readonly="staffForm.sid!=''"></el-input>
+                  </el-form-item>
                   <el-form-item label="姓名" prop="name">
                     <el-input v-model="staffForm.name" auto-complete="off" size="small"></el-input>
                   </el-form-item>
@@ -23,21 +28,27 @@
                   <el-form-item label="手机">
                     <el-input v-model="staffForm.mobile" auto-complete="off" size="small"></el-input>
                   </el-form-item>
-                  <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="staffForm.email" auto-complete="off" size="small"></el-input>
-                  </el-form-item>
                   <el-form-item label="电话">
                     <el-input v-model="staffForm.tel" auto-complete="off" size="small"></el-input>
                   </el-form-item>
                   <el-form-item label="QQ">
                     <el-input v-model="staffForm.qq" auto-complete="off" size="small"></el-input>
                   </el-form-item>
-                  <el-form-item label="状态">
+                  <el-form-item label="分组">
+                    <el-select v-model="staffForm.gid" placeholder="请选择">
+                      <el-option
+                        v-for="group in groups"
+                        :label="group.name"
+                        :value="group.gid">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <!--<el-form-item label="状态">
                     <el-select v-model="staffForm.status" placeholder="请选择账号状态">
                       <el-option label="正常" value="active"></el-option>
                       <el-option label="禁用" value="inactive"></el-option>
                     </el-select>
-                  </el-form-item>
+                  </el-form-item>-->
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                   <el-button size="small" @click="staffManageCancel">取 消</el-button>
@@ -45,7 +56,7 @@
                 </div>
               </el-dialog>
 
-              <el-dialog title="修改密码" v-model="staffPwdFormDialog" size="tiny">
+              <el-dialog title="修改密码" v-model="staffPwdFormDialog" size="tiny" :show-close="showClose" :close-on-click-modal="showClose" :close-on-press-escape="showClose">
                 <el-form :model="staffPwdForm" :rules="staffPwdRules" ref="staffPwdForm" label-width="90px">
                   <el-form-item label="密码" prop="pwd">
                     <el-input type="password" v-model="staffPwdForm.pwd" auto-complete="off" size="small"></el-input>
@@ -79,17 +90,17 @@
                     <el-table-column
                       prop="mobile"
                       label="手机"
-                      width="180">
+                      width="150">
                     </el-table-column>
                     <el-table-column
                       prop="email"
                       label="邮箱"
-                      width="180">
+                      width="190">
                     </el-table-column>
                     <el-table-column
                       prop="tel"
                       label="电话"
-                      width="180">
+                      width="160">
                     </el-table-column>
                     <el-table-column
                       prop="qq"
@@ -103,7 +114,7 @@
                       width="100">
                       <span>
                       <span v-if="row.status=='active'">正常</span>
-                      <span v-else>禁用</span>
+                      <span v-else>待激活</span>
                       </span>
                     </el-table-column>
                     <el-table-column
@@ -130,6 +141,9 @@
                     </el-pagination>
                   </div>
             </el-tab-pane>
+            <!-- 客服管理 结束 -->
+
+            <!-- 嵌入代码 开始 -->
             <el-tab-pane label="嵌入代码" name="embed">
               <p class="text-small" style="color:gray; font-size:13px;">嵌入以下代码到您的网站</p>
               <div>
@@ -149,14 +163,58 @@ _HORN('oid', {{me.oid}});
 _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
             </div>
             </el-tab-pane>
-            <el-tab-pane label="分组管理" name="group">分组管理</el-tab-pane>
+            <!-- 嵌入代码 结束 -->
+
+            <!-- 分组管理 开始 -->
+            <el-tab-pane label="分组管理" name="group">
+              <div style="margin-bottom: 20px;">
+                <el-button type="success" size="small" @click="fetchGroups">刷新</el-button>
+                <el-button type="primary" size="small" @click="groupFormDialog=true">新增</el-button>
+              </div>
+
+              <el-dialog title="分组管理" v-model="groupFormDialog" size="tiny" :show-close="showClose" :close-on-click-modal="showClose" :close-on-press-escape="showClose">
+                <el-form :model="groupForm" :rules="groupRules" ref="groupForm">
+                  <el-form-item label="组名" prop="name">
+                    <el-input v-model="groupForm.name" auto-complete="off" size="small"></el-input>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button size="small" @click="groupManageCancel">取 消</el-button>
+                  <el-button size="small" type="primary" @click="groupManageSave">确 定</el-button>
+                </div>
+              </el-dialog>
+
+              <el-table
+                v-loading="groupTableLoading"
+                :data="groups"
+                height="450"
+                border>
+                <el-table-column
+                  prop="name"
+                  label="组名"
+                  width="200">
+                </el-table-column>
+                <el-table-column
+                  inline-template
+                  :context="_self"
+                  label="操作">
+                  <span>
+                    <el-button type="text" size="small" @click="editGroup(row)">编辑</el-button>
+                    <!--<el-button type="text" size="small" @click="deleteGroup(row)">删除</el-button>-->
+                  </span>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <!-- 分组管理 结束 -->
+
+            <!-- 标签管理 开始 -->
             <el-tab-pane label="标签管理" name="tag">
               <div style="margin-bottom: 20px;">
                 <el-button type="success" size="small" @click="fetchTags">刷新</el-button>
                 <el-button type="primary" size="small" @click="tagFormDialog=true">新增</el-button>
               </div>
 
-              <el-dialog title="标签管理" v-model="tagFormDialog" size="tiny">
+              <el-dialog title="标签管理" v-model="tagFormDialog" size="tiny" :show-close="showClose" :close-on-click-modal="showClose" :close-on-press-escape="showClose">
                 <el-form :model="tagForm" :rules="tagRules" ref="tagForm">
                   <el-form-item label="颜色">
                     <span v-for="color in tagColors" @click="tagForm.color=color" :class="['el-tag', 'el-tag--'+color, {'tag-color-chosen':tagForm.color==color}, 'tag-color']"></span>
@@ -201,6 +259,8 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
                 </el-table-column>
               </el-table>
             </el-tab-pane>
+            <!-- 标签管理 结束 -->
+
           </el-tabs>
       </div>
 </template>
@@ -228,6 +288,7 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
         }
       };
       return {
+        showClose: false,
         staffTableLoading: false,
         staffFormDialog: false,
         staffPwdFormDialog: false,
@@ -239,7 +300,8 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
           email: "",
           tel: "",
           qq: "",
-          status: "active"
+          status: "pending",
+          gid: ""
         },
         staffPwdForm: {
           sid: "",
@@ -260,6 +322,14 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
         },
         tagColors: ["", "gray", "primary", "warning", "danger", "success"],
 
+        groupTableLoading: false,
+        groupFormDialog: false,
+        groupForm: {
+          gid: "",
+          name: ""
+        },
+        groups: [],
+
         formLabelWidth: '120px',
         
         settingNameMap: {
@@ -275,7 +345,7 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
             { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
           ],
           email: [
-            { required: true, message: '请输入邮箱，登录用', trigger: 'blur' }
+            { required: true, message: '客服是通过邮箱登录的，需要客服登录邮箱激活账号', trigger: 'blur' }
           ]
         },
         tagRules: {
@@ -290,6 +360,12 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
           ],
           repwd: [
             { validator: validatePass2, trigger: 'blur' }
+          ]
+        },
+        groupRules: {
+          name: [
+            { required: true, message: '请输入分组名', trigger: 'blur' },
+            { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
           ]
         }
       };
@@ -323,6 +399,7 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
     },
     created () {
       this.$store.dispatch("fetchStaffs");
+      this.fetchGroups();
       // this.$store.subscribe((mutation, state) => {
       //   console.log(mutation.type)
       //   console.log(mutation.payload)
@@ -436,7 +513,8 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
           this.staffForm.email = "";
           this.staffForm.tel = "";
           this.staffForm.qq = "";
-          this.staffForm.status = "active";
+          this.staffForm.status = "pending";
+          this.staffForm.gid = "";
         },
         editStaff: function(staff) {
           this.staffForm.sid = staff.sid;
@@ -447,6 +525,7 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
           this.staffForm.tel = staff.tel;
           this.staffForm.qq = staff.qq;
           this.staffForm.status = staff.status;
+          this.staffForm.gid = staff.gid;
 
           this.staffFormDialog = true;
         },
@@ -472,11 +551,6 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
           this.$refs.staffPwdForm.validate((valid) => {
             if (valid) {
               this.staffPwdFormDialog = false;
-
-              // this.$store.dispatch("saveStaff", this.staffForm).then((vm) => {
-              //   this.fetchStaffs();
-              //   this.$message("保存成功");
-              // });
               var 
                 sid = this.staffPwdForm.sid,
                 pwd = this.staffPwdForm.pwd,
@@ -496,6 +570,70 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
               return false;
             }
           });
+        },
+
+        // 分组管理
+        fetchGroups: function() {
+          var self = this;
+          this.groupTableLoading = true;
+          HORN.FetchGroups(function(r) {
+            self.groups = r;
+            self.groupTableLoading = false;
+          }, function() {
+            self.groupTableLoading = false;
+          });
+        },
+        groupManageSave: function() {
+          this.$refs.groupForm.validate((valid) => {
+            if (valid) {
+              this.groupFormDialog = false;
+              var 
+                gid = this.groupForm.gid,
+                name = this.groupForm.name,
+                self = this;
+              
+              HORN.SaveGroup(gid, name, function(r) {
+                self.fetchGroups();
+                self.$message("保存成功");
+              }, function() {
+                self.$message("保存失败");
+              });
+
+              this.$refs.groupForm.resetFields();
+            } else {
+              console.log('error submit!!');
+              return false;
+            }
+          });
+        },
+        groupManageCancel: function() {
+          this.groupFormDialog = false;
+          this.groupForm.gid = "";
+          this.groupForm.name = "";
+          this.$refs.groupForm.resetFields();
+        },
+        editGroup: function(group) {
+          this.groupForm.gid = group.gid;
+          this.groupForm.name = group.name;
+          this.groupFormDialog = true;
+        },
+        deleteGroup: function() {
+          // this.$confirm('确认删除该分组?', '提示', {
+          //   confirmButtonText: '确定',
+          //   cancelButtonText: '取消',
+          //   confirmButtonClass: 'el-button el-button--primary el-button--small',
+          //   cancelButtonClass: 'el-button el-button--default el-button--small',
+          //   type: 'warning'
+          // }).then(() => {
+          //   this.$store.dispatch("deleteTag", {tagId: tag.id}).then((vm) => {
+          //     this.fetchTags();
+          //     this.$message({
+          //       type: 'success',
+          //       message: '删除成功!'
+          //     });
+          //   });
+          // }).catch(() => {
+          // });
         }
     }
   };
