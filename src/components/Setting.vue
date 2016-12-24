@@ -131,7 +131,7 @@
                   </div>
             </el-tab-pane>
             <el-tab-pane label="嵌入代码" name="embed">
-              <p class="text-small" style="color:gray;">嵌入以下代码到您的网站</p>
+              <p class="text-small" style="color:gray; font-size:13px;">嵌入以下代码到您的网站</p>
               <div>
               <textarea style="height:210px; width:295px; padding:10px; resize:none; border:none; outline:none; background:#efe;" onclick="this.select();" readonly>(function(w, d, n) {
     w[n] = w[n] || function() {
