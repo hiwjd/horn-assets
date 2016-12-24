@@ -80,7 +80,8 @@
         var _self = this;
         this.$http.get(window.HORN_API+"/signout").then(function(rsp) {
           console.log(rsp);
-          _self.$router.push("/");
+          window.location.href = "/";
+          //_self.$router.push("/");
         }).catch(function(err) {
           console.log(err);
           _self.$message({
