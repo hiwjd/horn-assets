@@ -1,6 +1,6 @@
 <template>
     <div class="pad">
-    <h3>设置 <span style="color:gray; font-size:16px;">{{settingTitle}}</span></h3>
+    <h3>{{settingTitle}}</h3>
 
         <el-tabs :active-name="settingName" @tab-click="change">
             <el-tab-pane label="客服管理" name="staff">
