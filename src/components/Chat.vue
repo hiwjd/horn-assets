@@ -6,7 +6,9 @@
           <el-row>
             <el-col :span="24">
               <div>
-                {{chat.tracks[0].addr}}
+                <span>{{chat.tracks[0].addr}}</span>
+                <span class="last-msg-time">{{lastMsgTime(chat) | moment_fromnow}}</span>
+                <span class="last-msg">{{lastMsg(chat)}}</span>
               </div>
             </el-col>
           </el-row>
@@ -30,26 +32,6 @@
       console.log("Chat.vue created");
 
       window.addEventListener('resize', this.handleResize)
-
-      //debugger;
-      // console.log(this.$route.params);
-      // if(!this.$route.params.uid) {
-      //   if(Object.keys(this.users).length > 0) {
-      //     console.log("默认选第一个");
-      //     var _uid = Object.keys(this.users)[0];
-      //     this.$router.push({ name: "chatcard", params: {uid: _uid} });
-      //   } else {
-      //     console.log("跳转到nochat");
-      //     this.$router.push({ name: "nochat" });
-      //   }
-      // } else {
-      //   console.log("找对话");
-      //   if(typeof this.users[this.$route.params.uid] == "object") {
-      //     this.curUser = this.users[this.$route.params.uid];
-      //   } else {
-      //     this.$router.push({ name: "nochat" });
-      //   }
-      // }
     },
     data () {
         return {
@@ -58,17 +40,7 @@
     },
     beforeRouteEnter (to, from, next) {
       console.log("beforeRouteEnter");
-      // getPost(to.params.id, (err, post) => 
-      //   if (err) {
-      //     // display some global error message
-      //     next(false)
-      //   } else {
-      //     next(vm => {
-      //       vm.post = post
-      //     })
-      //   }
-      // })
-      //var _self = this;
+      
       setTimeout(function() {
         next(vm => {
           console.log(vm);
@@ -96,6 +68,30 @@
           return this.$store.state.chat.cid == chat.cid;
         }
         return false;
+      },
+      lastMsg: function(chat) {
+        if(!chat.msgs) {
+          return "";
+        }
+
+        var m = chat.msgs[chat.msgs.length-1];
+        switch(m.type) {
+          case "text":
+          return m.text;
+          break;
+        }
+      },
+      lastMsgTime: function(chat) {
+        if(!chat.msgs) {
+          return "";
+        }
+
+        var m = chat.msgs[chat.msgs.length-1];
+        switch(m.type) {
+          case "text":
+          return m.created_at;
+          break;
+        }
       }
     },
     computed: {
@@ -104,9 +100,6 @@
         },
         chats: function() {
           return this.$store.state.chats;
-        },
-        chat: function() {
-          return this.$store.state.chat;
         }
     }
   }
@@ -185,5 +178,16 @@
 .chat-info {
   padding: 30px 20px 20px 0;
   font-size: 14px;
+}
+.last-msg {
+  font-size: 12px;
+  line-height: 20px;
+  float: right;
+}
+.last-msg-time {
+  font-size: 12px;
+  color: #99A9BF;
+  float: right;
+  margin-left: 5px;
 }
 </style>
