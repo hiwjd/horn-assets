@@ -1,65 +1,68 @@
 <template>
     <div class="pad">
-        <h3>在线访客</h3>
+        <div class="pad-head">在线访客</div>
 
-        <el-table
-        :data="visitors"
-        height="450"
-        border
-        style="width: 100%">
-        <el-table-column
-          inline-template
-          label="访客"
-          sortable
-          width="180">
-          <div>
-            {{row.addr}}
-            {{row.ip}}
-          </div>
-        </el-table-column>
-        <el-table-column
-          inline-template
-          label="设备"
-          width="180">
-          <div>
-            {{row.os}}
-            {{row.browser}}
-          </div>
-        </el-table-column>
-        <el-table-column
-          inline-template
-          label="来源">
-          <div>
-            {{row.referer}}
-          </div>
-        </el-table-column>
-        <el-table-column
-          inline-template
-          label="正在访问"
-          width="100">
-          <div>
-            <a target="_blank" :href="row.url">{{row.title}}</a>
-          </div>
-        </el-table-column>
-        <el-table-column
-          prop="tag2"
-          label="标签2"
-          width="100"
-          :filters="[{ text: '家2', value: '家2' }, { text: '公司2', value: '公司2' }]"
-          :filter-method="filterTag2"
-          inline-template>
-          <el-tag :type="row.tag2 === '家' ? 'primary' : 'success'" close-transition>{{row.tag2}}</el-tag>
-        </el-table-column>
-        <el-table-column
-          inline-template
-          :context="_self"
-          label="操作"
-          width="100">
-          <span>
-            <el-button @click="invite(row)" type="text" size="small">邀请对话</el-button>
-          </span>
-        </el-table-column>
-      </el-table>
+        <div class="pad-body">
+          <el-table
+          :data="visitors"
+          height="450"
+          border
+          style="width: 100%">
+          <el-table-column
+            inline-template
+            label="访客"
+            sortable
+            width="180">
+            <div>
+              {{row.addr}}
+              {{row.ip}}
+            </div>
+          </el-table-column>
+          <el-table-column
+            inline-template
+            label="设备"
+            width="180">
+            <div>
+              {{row.os}}
+              {{row.browser}}
+            </div>
+          </el-table-column>
+          <el-table-column
+            inline-template
+            label="来源">
+            <div>
+              {{row.referer}}
+            </div>
+          </el-table-column>
+          <el-table-column
+            inline-template
+            label="正在访问"
+            width="100">
+            <div>
+              <a target="_blank" :href="row.url">{{row.title}}</a>
+            </div>
+          </el-table-column>
+          <el-table-column
+            prop="tag2"
+            label="标签2"
+            width="100"
+            :filters="[{ text: '家2', value: '家2' }, { text: '公司2', value: '公司2' }]"
+            :filter-method="filterTag2"
+            inline-template>
+            <el-tag :type="row.tag2 === '家' ? 'primary' : 'success'" close-transition>{{row.tag2}}</el-tag>
+          </el-table-column>
+          <el-table-column
+            inline-template
+            :context="_self"
+            label="操作"
+            width="100">
+            <span>
+              <el-button @click="invite(row)" type="text" size="small">邀请对话</el-button>
+            </span>
+          </el-table-column>
+        </el-table>
+      </div>
+
     </div>
 </template>
 
@@ -95,6 +98,13 @@ h3 {
     margin-top: 0;
 }
 .pad {
-    padding: 20px;
+    /*padding: 20px;*/
+}
+.pad-head {
+  padding: 20px;
+  border-bottom: 1px solid #efefef;
+}
+.pad-body {
+  padding: 20px;
 }
 </style>

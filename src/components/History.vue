@@ -1,34 +1,53 @@
 <template>
     <div class="pad">
-        <h3>历史对话</h3>
+        <div class="pad-head">历史对话</div>
 
-        <el-row :gutter="20">
+        <el-row>
 
-          <el-col :span="8">
-
-            <el-form ref="form" :model="form" label-width="40px">
+          <el-col :span="8" style="padding:20px; border-right:1px solid #efefef;">
+            <el-form ref="searchForm" :model="searchForm" label-width="40px">
+              <el-form-item label="日期">
+                <el-date-picker
+                  v-model="searchForm.date"
+                  type="daterange"
+                  align="right"
+                  placeholder="选择日期范围"
+                  :picker-options="datePickerOptions"
+                  style="width: 220px">
+                </el-date-picker>
+              </el-form-item>
               <el-form-item label="搜索">
-                <el-input
-                  placeholder="请输入内容"
-                  v-model="input">
-                </el-input>
+                <el-row>
+                  <el-col :span="18">
+                    <el-input
+                      placeholder="可以搜索客服姓名"
+                      v-model="searchForm.input">
+                    </el-input>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-button style="margin-left:10px;" @click="fetchChats">搜索</el-button>
+                  </el-col>
+                </el-row>
               </el-form-item>
             </el-form>
 
             <el-table
+              v-loading="loadingChats"
               :data="chats"
-              height="450"
+              :height="chatTableHeight"
               border
               style="width: 100%">
               <el-table-column
                 inline-template
-                label="对话"
-                sortable>
-                <div>
-                  {{row.cid}}
+                label="对话信息">
+                <div style="font-size:12px;">
+                  <div>访客: <span>{{row.visitor_name}}</span></div>
+                  <div>客服: <span>{{row.staff_name}}</span></div>
+                  <div>开始时间: <span>{{row.created_at}}</span></div>
+                  <div>结束时间: <span>{{row.ended_at}}</span></div>
                 </div>
               </el-table-column>
-              <el-table-column
+              <!-- <el-table-column
                 inline-template
                 label="访客">
                 <div>
@@ -41,14 +60,14 @@
                 <div>
                   {{row.sid}}
                 </div>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 inline-template
                 :context="_self"
                 label="操作"
-                width="100">
+                width="90">
                 <span>
-                  <el-button @click="invite(row)" type="text" size="small">查看对话</el-button>
+                  <el-button @click="viewchat(row)" type="text" size="small">查看对话</el-button>
                 </span>
               </el-table-column>
             </el-table>
@@ -67,78 +86,83 @@
 
           </el-col>
 
-          <el-col :span="16">
-            <el-card class="box-card" :body-style="{padding:0}">
-              <div class="el-row">
-                <div class="el-col el-col-17">
-                  <div class="chat-card">
-                    <div class="chat-tool">浙江杭州</div>
-                    <div class="chat-tip">MacOS Chrome 正在浏览 <a target="_blank" href="http://www.horn.com:9092/demo.html?key=abc">demo.html</a> IP:101.71.255.226</div>
-                    <div class="chat-pan" style="height: 450px; overflow: auto;">
-                      <div class="message request_chat">
-                        <div class="m-from">
-                          <span class="m-name">&nbsp;</span>
-                          <span class="m-time">早上08:04</span>
-                        </div>
-                        <div class="m-text"></div>
+          <el-col :span="16" v-loading="loadingChat">
+
+            <div class="el-row" v-show="chat.cid!=''">
+              <div class="el-col el-col-17">
+                <div class="chat-card">
+                  <div class="chat-tool">{{track.addr}}</div>
+                  <div class="chat-tip">{{track.os}} {{track.browser}} 正在浏览 <a target="_blank" :href="track.url">{{track.title}}</a> IP:{{track.ip}}</div>
+                  <div class="chat-pan" v-bind:style="{height: chatPanHeight, overflow: 'auto'}">
+                    <div v-for="m in chat.msgs" class="message" :class="[m.type, {me:m.from.role=='staff'}]">
+                      <div class="m-from">
+                        <span class="m-name">{{m.from.name||'&nbsp;'}}</span>
+                        <span class="m-time">{{m.created_at|msgtime}}</span>
                       </div>
-                      <div class="message join_chat me">
-                        <div class="m-from">
-                          <span class="m-name">&nbsp;</span>
-                          <span class="m-time">早上08:04</span>
-                        </div>
-                        <div class="m-text"></div>
-                      </div>
-                      <div class="message text me">
-                        <div class="m-from">
-                          <span class="m-name">&nbsp;</span>
-                          <span class="m-time">早上08:05</span>
-                        </div>
-                        <div class="m-text">Http 缓存机制作为 web 性能优化的重要手段，对从事 Web 开发的小伙伴们来说是必须要掌握的知识，但最近我遇到了几个缓存头设置相关的题目，发现有好几道题答错了，有的甚至在知道了正确答案后依然不明白其原因，可谓相当的郁闷呢！！</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="el-col el-col-7">
-                  <div class="chat-info">
-                    <div class="infocard">
-                      <div class="infocard-head">访问轨迹</div>
-                      <div class="infocard-body">
-                        <div><a target="_blank" href="http://www.horn.com:9092/demo.html?key=abc">2 天前 demo.html</a></div>
-                        <div><a target="_blank" href="http://www.horn.com:9092/demo.html?x=2">2 天前 demo.html</a></div>
-                        <div><a target="_blank" href="http://www.horn.com:9092/demo.html?x=1">2 天前 demo.html</a></div>
-                        <div><a target="_blank" href="http://www.horn.com:9092/demo.html?x=2">2 天前 demo.html</a></div>
-                        <div><a target="_blank" href="http://www.horn.com:9092/demo.html?x=2">2 天前 demo.html</a></div>
-                      </div>
-                    </div>
-                    <div class="infocard">
-                      <div class="infocard-head">访客信息</div>
-                      <div class="infocard-body">
-                        <div>指纹 76c55e82ebb69eb30e679ac0ea1de8d8</div>
-                        <div>VID ecp9ZJX0v2pUgxepM8MBB9I</div>
-                        <div>IP 101.71.255.226</div>
-                      </div>
-                    </div>
-                    <div class="infocard">
-                      <div class="infocard-head">自定义信息</div>
-                      <div class="infocard-body">
-                        <div>xxxxx</div>
-                        <div>xxxxx</div>
-                        <div>xxxxx</div>
-                      </div>
-                    </div>
-                    <div class="infocard">
-                      <div class="infocard-head">标签</div>
-                      <div class="infocard-body">
-                        <span class="el-tag el-tag--primary">标签三<!----></span>
-                        <span class="el-tag el-tag--success">标签四<!----></span>
-                        <span class="el-tag el-tag--warning">标签五<!----></span>
-                      </div>
+                      <div class="m-text">{{m.text}}</div>
                     </div>
                   </div>
                 </div>
               </div>
-            </el-card>
+              <div class="el-col el-col-7">
+                <div class="chat-info">
+                  <div class="infocard">
+                    <div class="infocard-head">访问轨迹</div>
+                    <div class="infocard-body">
+                      <div v-for="t in chat.tracks"><a target="_blank" :href="t.url">{{t.created_at|moment_fromnow}} {{t.title}}</a></div>
+                    </div>
+                  </div>
+                  <div class="infocard">
+                    <div class="infocard-head">访客信息</div>
+                    <div class="infocard-body">
+                      <div>
+                        <span class="visitor-info-label">姓名</span>
+                        <span class="visitor-info-editor">{{chat.visitor.name}}</span>
+                      </div>
+                      <div>
+                        <span class="visitor-info-label">性别</span>
+                        <span class="visitor-info-editor">{{chat.visitor.gender}}</span>
+                      </div>
+                      <div>
+                        <span class="visitor-info-label">年龄</span>
+                        <span class="visitor-info-editor">{{chat.visitor.age}}</span>
+                      </div>
+                      <div>
+                        <span class="visitor-info-label">手机</span>
+                        <span class="visitor-info-editor">{{chat.visitor.mobile}}</span>
+                      </div>
+                      <div>
+                        <span class="visitor-info-label">邮箱</span>
+                        <span class="visitor-info-editor">{{chat.visitor.email}}</span>
+                      </div>
+                      <div>
+                        <span class="visitor-info-label">QQ</span>
+                        <span class="visitor-info-editor">{{chat.visitor.qq}}</span>
+                      </div>
+                      <div>
+                        <span class="visitor-info-label">地址</span>
+                        <span class="visitor-info-editor">{{chat.visitor.addr}}</span>
+                      </div>
+                      <div>
+                        <span class="visitor-info-label">备注</span>
+                        <span class="visitor-info-editor">{{chat.visitor.note}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="infocard">
+                    <div class="infocard-head">标签</div>
+                    <div class="infocard-body">
+                      <el-tag v-for="tag in chat.tags" :type="tag.color" style="margin:5px;">{{tag.name}}</el-tag>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-show="chat.cid==''">
+              <center style="color: #99A9BF; font-size: 14px; margin:150px;">左侧选择对话进行查看</center>
+            </div>
+
           </el-col>
 
         </el-row>
@@ -149,43 +173,74 @@
 <script>
     export default {
         created () {
-            this.fetchChats();
-            console.log("历史对话");
+          window.addEventListener('resize', this.handleResize)
+          this.fetchChats();
         },
         data () {
             return {
                 page: 1,
                 size: 2,
                 total: 0,
-                form: {},
-                input: "",
                 height: window.innerHeight,
-                chats: []
+                chats: [],
+                loadingChat: false,
+                loadingChats: false,
+                chat: {
+                  cid: "",
+                  tracks: [],
+                  msgs: [],
+                  visitor: {},
+                  tags: []
+                },
+                chatListHeight: 450,
+                searchForm: {
+                  date: ["", ""],
+                  input: ""
+                },
+                datePickerOptions: {
+                  shortcuts: [{
+                    text: '最近一周',
+                    onClick(picker) {
+                      const end = new Date();
+                      const start = new Date();
+                      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                      picker.$emit('pick', [start, end]);
+                    }
+                  }, {
+                    text: '最近一个月',
+                    onClick(picker) {
+                      const end = new Date();
+                      const start = new Date();
+                      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                      picker.$emit('pick', [start, end]);
+                    }
+                  }, {
+                    text: '最近三个月',
+                    onClick(picker) {
+                      const end = new Date();
+                      const start = new Date();
+                      start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                      picker.$emit('pick', [start, end]);
+                    }
+                  }]
+                }
             }
         },
         computed: {
-            computedHeight: function() {
-              return this.height + "px";
+            chatTableHeight: function() {
+              return this.height - 273;
             },
-            chat: function() {
-              return this.$store.state.chat;
+            chatPanHeight: function() {
+              var _h = this.height - 163;
+              return _h+"px";
+            },
+            track: function() {
+              return this.chat.tracks.length==0 ? {} : this.chat.tracks[0];
             }
         },
         methods: {
-          choseu (chat, e) {
-            console.log("choseu");
-            this.$store.dispatch('choseChat', {chat: chat});
-            this.$router.push({ name:"chatcard", params: {uid: chat.cid, chat:chat}, meta: {chat: chat} });
-          },
           handleResize: function(e) {
             this.height = window.innerHeight;
-            this.width = window.innerWidth;
-          },
-          isActive: function(chat) {
-            if(this.$store.state.chat) {
-              return this.$store.state.chat.cid == chat.cid;
-            }
-            return false;
           },
           handleSizeChange: function(size) {
             this.size = size;
@@ -196,12 +251,33 @@
             this.fetchChats();
           },
           fetchChats: function() {
-            var _self = this;
-            this.$http.get("/api/b/history/chats?size="+this.size+"&page="+this.page).then(function(res) {
-              _self.chats = res.data.data;
-              _self.total = parseInt(res.data.total);
-            }).catch(function(err) {
-              console.log(err);
+            var self = this;
+            this.loadingChats = true;
+
+            var data = {
+              search: this.searchForm.input,
+              ds: this.searchForm.date[0],
+              de: this.searchForm.date[1],
+              page: this.page,
+              size: this.size
+            };
+            HORN.FetchChats(data, function(res) {
+              self.loadingChats = false;
+              self.chats = res.data;
+              self.total = parseInt(res.total);
+            }, function() {
+              self.loadingChats = false;
+            });
+          },
+          viewchat: function(chat) {
+            this.chatListHeight = 550;
+            var self = this;
+            this.loadingChat = true;
+            HORN.FetchChat(chat.cid, function(res) {
+              self.loadingChat = false;
+              self.chat = res;
+            }, function() {
+              self.loadingChat = false;
             });
           }
         }
@@ -213,7 +289,14 @@ h3 {
     margin-top: 0;
 }
 .pad {
-    padding: 20px;
+    /*padding: 20px;*/
+}
+.pad-head {
+  padding: 20px;
+  border-bottom: 1px solid #efefef;
+}
+.pad-body {
+  padding: 20px;
 }
 .el-tabs {
   width: 100%;
@@ -309,5 +392,18 @@ h3 {
 }
 .infocard a {
   text-decoration: none;
+}
+.visitor-info-editor {
+  border: none;
+  background: #F9FAFC;
+}
+.visitor-info-editor:focus {
+  background: #fff9c2;
+  outline: none; 
+}
+.visitor-info-label {
+  width: 30px;
+  display: inline-block;
+  color: gray;
 }
 </style>

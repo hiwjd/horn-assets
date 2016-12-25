@@ -1,7 +1,8 @@
 <template>
     <div class="pad">
-    <h3>{{settingTitle}}</h3>
+    <div class="pad-head">{{settingTitle}}</div>
 
+      <div class="pad-body">
         <el-tabs :active-name="settingName" @tab-click="change">
 
             <!-- 客服管理 开始 -->
@@ -262,6 +263,8 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
             <!-- 标签管理 结束 -->
 
           </el-tabs>
+
+        </div>
       </div>
 </template>
 
@@ -644,7 +647,14 @@ h3 {
     margin-top: 0;
 }
 .pad {
-    padding: 20px;
+    /*padding: 20px;*/
+}
+.pad-head {
+  padding: 20px;
+  border-bottom: 1px solid #efefef;
+}
+.pad-body {
+  padding: 20px;
 }
 .el-tabs {
   /*width: 100%;*/
