@@ -148,7 +148,7 @@
             <el-tab-pane label="嵌入代码" name="embed">
               <p class="text-small" style="color:gray; font-size:13px;">嵌入以下代码到您的网站</p>
               <div>
-              <textarea style="height:210px; width:295px; padding:10px; resize:none; border:none; outline:none; background:#efe;" onclick="this.select();" readonly>(function(w, d, n) {
+              <textarea style="height:215px; width:295px; padding:10px; resize:none; border:none; outline:none; background:#efe;" onclick="this.select();" readonly>(function(w, d, n) {
     w[n] = w[n] || function() {
         (w[n].s = w[n].s || []).push(arguments);
     };
@@ -161,7 +161,7 @@
     s.parentNode.insertBefore(el, s);
 })(window, document, '_HORN');
 _HORN('oid', {{me.oid}});
-_HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
+_HORN('gid', '{{me.staff.gid}}');</textarea>
             </div>
             </el-tab-pane>
             <!-- 嵌入代码 结束 -->
@@ -194,6 +194,11 @@ _HORN('sid', 'Hrr30lzGG7sEG7Sy8lQ');</textarea>
                   prop="name"
                   label="组名"
                   width="200">
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="分组ID"
+                  width="260">
                 </el-table-column>
                 <el-table-column
                   inline-template
