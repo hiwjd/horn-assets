@@ -89,6 +89,8 @@
         var m = chat.msgs[chat.msgs.length-1];
         switch(m.type) {
           case "text":
+          case "file":
+          case "image":
           return m.created_at;
           break;
         }
