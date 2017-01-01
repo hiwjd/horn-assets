@@ -157,7 +157,7 @@
         s = d.getElementsByTagName("script")[0];
     el.async = true;
     el.charset = 'UTF-8';
-    el.src = '//www.horn.com:9092/dst/horn.front.js';
+    el.src = '//f1.stxtgl.com/js/horn.front.min.js';
     s.parentNode.insertBefore(el, s);
 })(window, document, '_HORN');
 _HORN('oid', {{me.oid}});

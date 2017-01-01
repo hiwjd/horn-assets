@@ -14,7 +14,7 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
     chunkFilename: '[id].chunk.js',
-    publicPath: '//assets.horn.com:9092/dist/'
+    publicPath: '//f1.stxtgl.com/js/app/'
   },
   resolveLoader: {
     root: path.join(__dirname, 'node_modules'),

@@ -2,7 +2,7 @@
     <div>
       <div class="left-nav">
         <center style="margin-top: 20px;">
-          <span>HORN</span>
+          <span></span>
         </center>
         
         <ul class="menus">

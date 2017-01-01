@@ -1,7 +1,7 @@
 <template>
     <div class="header">
       <div class="inner">
-        HORN
+        悦聊
         <div class="right">
           <router-link to="/signup" class="nav">注册</router-link>
           <router-link to="/signin" class="nav">登录</router-link>

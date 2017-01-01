@@ -1,7 +1,7 @@
 export default function createHORNPlugin (HORN) {
   return store => {
 
-    var host = window.HORN_API;//"http://app.horn.com:9092/api";
+    var host = window.HORN_API;
     HORN.HOST = window.HORN_API;
 
     HORN.StaffInfo(function(res) {

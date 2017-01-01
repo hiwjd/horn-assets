@@ -27,10 +27,11 @@
           </div>
           <div class="chat-editor">
             <div class="chat-editor-tool">
-              <span>ctrl发送<input type="checkbox" v-model="ctrl"></span>
               <span id="container">
-                <a id="pickfiles" href="javascript:void(0);">上传</a>
+                <a href="#" id="pickfiles"><i style="font-size:17px; color:#aaa;" class="el-icon-document"></i></a>
+                <!-- <el-button icon="upload" id="pickfiles" size="mini" type="info"></el-button> -->
               </span>
+              <el-checkbox v-model="ctrl" style="float:right;">CTRL+回车发送</el-checkbox>
             </div>
             <div class="chat-editor-input">
               <textarea class="inputor" v-model="content" v-on:keydown.enter="enter" v-bind:style="{ height: '149px' }"></textarea>
@@ -45,7 +46,9 @@
           <div class="infocard">
             <div class="infocard-head">访问轨迹</div>
             <div class="infocard-body">
-              <div v-for="t in chat.tracks"><a target="_blank" :href="t.url">{{t.created_at|moment_fromnow}} {{t.title}}</a></div>
+              <div v-for="t in chat.tracks">
+                <a target="_blank" :href="t.url">{{t.created_at|moment_fromnow}} {{t.title}}</a>
+              </div>
             </div>
           </div>
 
@@ -238,14 +241,14 @@
       var self = this;
       setTimeout(function(){
         //debugger;
-      window.uploader = Qiniu.uploader({
+      var uploader = Qiniu.uploader({
           runtimes: 'html5,flash,html4',      // 上传模式,依次退化
           browse_button: 'pickfiles',         // 上传选择的点选按钮，**必需**
           // 在初始化时，uptoken, uptoken_url, uptoken_func 三个参数中必须有一个被设置
           // 切如果提供了多个，其优先级为 uptoken > uptoken_url > uptoken_func
           // 其中 uptoken 是直接提供上传凭证，uptoken_url 是提供了获取上传凭证的地址，如果需要定制获取 uptoken 的过程则可以设置 uptoken_func
           // uptoken : '', // uptoken 是上传凭证，由其他程序生成
-          uptoken_url: '//app.horn.com:9092/api/uptoken',         // Ajax 请求 uptoken 的 Url，**强烈建议设置**（服务端提供）
+          uptoken_url: 'https://app.hiyueliao.com/api/uptoken',         // Ajax 请求 uptoken 的 Url，**强烈建议设置**（服务端提供）
           // uptoken_func: function(file){    // 在需要获取 uptoken 时，该方法会被调用
           //    // do something
           //    return uptoken;
@@ -301,7 +304,7 @@
 
                      //var domain = up.getOption('domain');
                      var res = JSON.parse(info);
-                     var sourceLink = "http://oism9d3l7.bkt.clouddn.com/" + res.key; // 获取上传成功后的文件的Url
+                     var sourceLink = "https://f1.stxtgl.com/" + res.key; // 获取上传成功后的文件的Url
 
                      if(["image/png","image/jpg","image/jpeg"].indexOf(file.type) > -1) {
                         HORN.SendMsgImage(self.chat.cid, sourceLink, file.size, 0, 0, function() {
